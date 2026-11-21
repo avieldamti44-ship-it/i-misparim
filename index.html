@@ -1,0 +1,810 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>אי המספרים</title>
+<meta name="description" content="משחק הרפתקאות ללימוד חשבון לכיתות א׳–ח׳">
+<meta name="theme-color" content="#12a2c4">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32.png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="אי המספרים">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;600;800;900&display=swap" rel="stylesheet">
+<style>
+/* VOICE: playful, loud, encouraging — a treasure-hunt adventure, never a test
+   IDEA: a pirate sea map; every station is a different mini-game played with math answers
+   PICTURE: live scenes — balloons in the sky, fish underwater, ships firing cannons, sand to dig, a giant octopus
+   COLOUR and TYPE: turquoise sea dominant, warm sand support, coral accent; Rubik heavy weights
+   LAYOUT: phone-first single column; play screen = companion+question banner, live scene, optional keypad */
+:root{color-scheme:light dark;
+--sea:light-dark(#12a2c4,#0b3550);--sea2:light-dark(#0d86a6,#082a40);
+--sand:light-dark(#ffe0a0,#d8b56e);--sand2:light-dark(#f2c46e,#b8924a);
+--card:light-dark(#fffaf0,#132f45);--ink:light-dark(#1b2836,#f1f6fa);--muted:light-dark(#5d6d7c,#a7bccd);
+--line:light-dark(#eadbb8,#24496a);--coral:#ff6a48;--coral2:#e04e2d;--leaf:#22b569;--gold:#ffc130;--lock:light-dark(#9db2c3,#4b6378)}
+:root[data-theme=light]{color-scheme:light}:root[data-theme=dark]{color-scheme:dark}
+*{box-sizing:border-box;min-width:0;-webkit-tap-highlight-color:transparent}
+body{margin:0;font:17px/1.5 Rubik,system-ui,sans-serif;color:var(--ink);overflow-x:clip;min-height:100dvh;user-select:none;-webkit-user-select:none;
+background:radial-gradient(circle at 20% 10%,rgba(255,255,255,.18) 0 2px,transparent 3px) 0 0/46px 46px,linear-gradient(var(--sea),var(--sea2)) fixed}
+button,select,input,textarea{font:inherit;color:inherit}
+button{cursor:pointer;border:0;border-radius:16px;min-height:48px}
+button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+.screen{display:none;max-width:560px;margin:0 auto;padding:14px 14px 40px;min-height:100dvh}
+.screen.on{display:block}
+.m{unicode-bidi:isolate;direction:ltr;display:inline-block;white-space:nowrap}
+.panel{background:var(--card);border-radius:24px;padding:18px;box-shadow:0 6px 0 rgba(0,0,0,.15)}
+.panel h2{font-size:22px;margin:0 0 12px}
+.big{width:100%;background:var(--coral);color:#fff;font-weight:800;font-size:20px;margin-top:14px;box-shadow:0 5px 0 var(--coral2)}
+.big:active{transform:translateY(3px);box-shadow:0 2px 0 var(--coral2)}
+.big.alt{background:var(--leaf);box-shadow:0 5px 0 #168a4f}
+.big.ghost{background:var(--card);color:var(--ink);box-shadow:0 5px 0 var(--line)}
+.big.gold{background:var(--gold);color:#4a3200;box-shadow:0 5px 0 #c48e00}
+/* characters */
+.ch{overflow:visible}
+.ch .eye{animation:blink 4s infinite;transform-box:fill-box;transform-origin:center}
+@keyframes blink{0%,93%,100%{transform:scaleY(1)}96%{transform:scaleY(.1)}}
+.idle{animation:bob 2.4s ease-in-out infinite}
+@keyframes bob{50%{transform:translateY(-5px)}}
+.happy{animation:jump .5s ease 2}
+@keyframes jump{40%{transform:translateY(-22px) rotate(-6deg)}}
+.sad{animation:sad 1.1s ease}
+@keyframes sad{30%,70%{transform:rotate(9deg) translateY(4px)}}
+/* home */
+.hero{text-align:center;color:#fff}
+.hero svg{width:100%;max-width:400px;height:auto;display:block;margin:0 auto -8px}
+.hero h1{font-size:46px;line-height:1.05;margin:0;font-weight:900;text-shadow:0 3px 0 rgba(0,0,0,.18)}
+.hero p{margin:6px 0 16px;opacity:.92}
+.plist{display:grid;gap:10px;margin-bottom:14px}
+.prof{display:flex;align-items:center;gap:12px;background:light-dark(#fff,#1b3d58);border:2px solid var(--line);border-radius:18px;padding:8px 12px;text-align:start;width:100%}
+.prof svg{width:52px;height:60px;flex:none}
+.prof b{display:block;font-size:19px}.prof small{color:var(--muted)}
+.prof .go{margin-inline-start:auto;font-weight:800;color:var(--coral);white-space:nowrap}
+.empty{color:var(--muted);margin:0 0 12px}
+label{font-weight:600;display:block;margin:12px 0 6px}
+input[type=text],textarea{width:100%;font-size:18px;padding:12px 14px;border-radius:14px;border:2px solid var(--line);background:light-dark(#fff,#0f2638);user-select:text;-webkit-user-select:text}
+textarea{font-size:13px;min-height:90px;direction:ltr}
+.grades{display:grid;grid-template-columns:repeat(8,minmax(0,1fr));gap:6px}
+.grades button{background:light-dark(#fff,#0f2638);border:2px solid var(--line);font-weight:800;font-size:19px;padding:0}
+.grades button.sel,.chars button.sel{background:var(--coral);border-color:var(--coral2);color:#fff}
+.chars{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+.chars button{background:light-dark(#fff,#0f2638);border:2px solid var(--line);padding:6px 2px;font-weight:700;font-size:14px}
+.chars svg{width:100%;height:68px;display:block}
+.err{color:var(--coral2);font-weight:600;min-height:1.5em;margin:6px 0 0}
+.savebox{margin-top:14px;color:#fff;text-align:center;font-size:15px}
+.savebox button{background:rgba(255,255,255,.2);color:#fff;font-weight:700;padding:0 14px;min-height:44px;margin:4px}
+/* bars */
+.bar{display:flex;align-items:center;gap:6px;color:#fff;margin-bottom:10px}
+.ib{background:rgba(255,255,255,.2);color:#fff;min-width:46px;padding:0 10px;font-weight:700;min-height:44px}
+.chip{display:flex;align-items:center;gap:6px;background:rgba(0,0,0,.18);border-radius:999px;padding:2px 12px 2px 4px;font-weight:700;white-space:nowrap;overflow:hidden}
+.chip svg{width:36px;height:42px;flex:none}
+.coins{margin-inline-start:auto;background:var(--gold);color:#4a3200;border-radius:999px;padding:6px 12px;font-weight:800;white-space:nowrap;display:flex;align-items:center;gap:5px}
+.coins i{width:16px;height:16px;border-radius:50%;background:#ffde7a;border:3px solid #c48e00;display:inline-block}
+.coins.bump{animation:pop .35s}
+.bar select{background:rgba(255,255,255,.2);border:0;border-radius:12px;min-height:44px;padding:0 6px;color:#fff;font-weight:700}
+.bar select option{color:#1b2836}
+.tabs{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px;margin-bottom:8px}
+.tabs button{background:var(--card);font-weight:800;font-size:15px;line-height:1.15;padding:8px 4px;box-shadow:0 4px 0 rgba(0,0,0,.15)}
+.tabs button.sel{background:var(--gold);color:#4a3200}
+.tabs button.lk{opacity:.55}
+.tabs small{display:block;font-weight:600;font-size:13px}
+.whead{color:#fff;text-align:center}
+.whead h2{font-size:32px;line-height:1.05;margin:0}
+.whead p{margin:4px 0 0;opacity:.9}
+.resume{display:flex;align-items:center;gap:10px;background:var(--gold);color:#4a3200;border-radius:18px;padding:8px 12px;margin:10px 0 0;font-weight:700;width:100%;text-align:start;box-shadow:0 4px 0 #c48e00}
+#mapsvg{width:100%;max-width:420px;display:block;margin:0 auto}
+.st{cursor:pointer}.st.lock{cursor:default}
+.pulse{animation:pulse 1.4s ease-in-out infinite;transform-box:fill-box;transform-origin:center}
+@keyframes pulse{50%{transform:scale(1.2);opacity:.3}}
+#tok{transition:transform 1.4s cubic-bezier(.5,0,.3,1)}
+.cloud{animation:drift linear infinite}
+@keyframes drift{from{transform:translateX(-140px)}to{transform:translateX(500px)}}
+.sway{animation:sway 3s ease-in-out infinite;transform-box:fill-box;transform-origin:bottom center}
+@keyframes sway{50%{transform:rotate(5deg)}}
+/* play */
+#play.on{display:flex;flex-direction:column;height:100dvh;padding:10px 10px 12px}
+.prog{display:flex;gap:4px;flex:1}
+.prog i{flex:1;height:12px;border-radius:6px;background:rgba(255,255,255,.3)}
+.prog i.ok{background:var(--leaf)}.prog i.no{background:var(--coral)}.prog i.now{background:#fff}
+.banner{position:relative;display:flex;gap:8px;align-items:center;background:var(--card);border-radius:22px;padding:8px 12px 8px 8px;box-shadow:0 5px 0 rgba(0,0,0,.15);z-index:3}
+.comp{width:62px;height:72px;flex:none;position:relative}
+.comp svg{width:100%;height:100%}
+.bubble{position:absolute;top:100%;inset-inline-start:4px;margin-top:8px;background:#fff;color:#1b2836;border-radius:14px;padding:8px 12px;font-size:15px;font-weight:600;width:max-content;max-width:min(300px,80vw);box-shadow:0 4px 14px rgba(0,0,0,.2);opacity:0;transform:translateY(-6px);transition:.25s;pointer-events:none;z-index:5}
+.bubble.on{opacity:1;transform:none}
+.bubble:before{content:"";position:absolute;top:-8px;inset-inline-start:22px;border:8px solid transparent;border-top:0;border-bottom-color:#fff}
+.qa{flex:1;text-align:center;padding-inline-end:40px}
+.q{font-size:clamp(22px,6.4vw,32px);font-weight:800;line-height:1.25;text-wrap:balance}
+.q.long{font-size:clamp(17px,4.6vw,22px)}
+.fig svg{width:100%;max-width:200px;max-height:110px;height:auto}
+.ans{direction:ltr;font-size:30px;font-weight:900;min-height:48px;border-radius:14px;background:light-dark(#fff,#0f2638);border:3px dashed var(--line);display:grid;place-items:center;margin:6px auto 0;max-width:220px}
+.ans.ok{border:3px solid var(--leaf);color:var(--leaf)}.ans.no{border:3px solid var(--coral);color:var(--coral)}
+.hintb{position:absolute;top:6px;inset-inline-end:8px;background:var(--gold);color:#4a3200;font-weight:800;font-size:14px;min-height:34px;padding:0 10px;border-radius:999px}
+.field{position:relative;flex:1;min-height:170px;margin-top:10px;border-radius:22px;overflow:hidden;box-shadow:inset 0 0 0 3px rgba(255,255,255,.25)}
+.f-sky{background:linear-gradient(light-dark(#8fdcff,#1d3d6e),light-dark(#d9f4ff,#3d5f8f))}
+.f-deep{background:linear-gradient(light-dark(#1fb5d6,#0b4466),light-dark(#06607f,#03263b))}
+.f-sea{background:linear-gradient(light-dark(#ffd9a8,#3b2d5c) 0%,light-dark(#9fe3ff,#20406e) 55%)}
+.f-sand{background:radial-gradient(circle at 30% 20%,#ffffff40 0 2px,transparent 3px) 0 0/22px 22px,linear-gradient(light-dark(#ffe0a0,#c9a35c),light-dark(#f2c46e,#a7823e))}
+.shake{animation:shake .4s}.pop{animation:pop .45s}
+@keyframes shake{25%{transform:translateX(-8px)}75%{transform:translateX(8px)}}
+@keyframes pop{40%{transform:scale(1.12)}}
+/* balloons and fish */
+.bal,.fish{position:absolute;left:0;top:0;background:none;padding:0;min-height:0;border-radius:0;will-change:transform}
+.bal{width:84px;height:128px}
+.bal svg,.fish svg{width:100%;height:100%;display:block;pointer-events:none}
+.bal span,.fish span{position:absolute;left:0;right:0;text-align:center;color:#fff;font-weight:900;text-shadow:0 2px 0 rgba(0,0,0,.35);direction:ltr;pointer-events:none}
+.bal span{top:24px;font-size:24px}
+.lbl-s{font-size:18px!important}.lbl-xs{font-size:14px!important}
+.glow{filter:drop-shadow(0 0 10px #fff) drop-shadow(0 0 18px var(--gold))}
+.fish{width:132px;height:76px}
+.fish span{top:24px;font-size:22px;left:14px;right:22px}
+.hook{position:absolute;top:0;width:3px;background:#2b2b2b;height:0;transition:height .35s ease-in;z-index:2}
+.hook:after{content:"";position:absolute;bottom:-12px;left:-7px;width:12px;height:14px;border:3px solid #555;border-top:0;border-radius:0 0 10px 10px}
+.bub{position:absolute;bottom:-20px;width:10px;height:10px;border-radius:50%;border:2px solid #ffffff80;animation:rise linear infinite}
+@keyframes rise{to{transform:translateY(-110vh) translateX(14px)}}
+.weed{position:absolute;bottom:-4px}
+.pt{position:absolute;width:11px;height:11px;border-radius:50%;animation:pt .75s ease-out forwards;pointer-events:none;z-index:4}
+@keyframes pt{to{transform:translate(var(--dx),var(--dy)) scale(.2);opacity:0}}
+.flt{position:absolute;font-weight:900;font-size:26px;color:#fff;text-shadow:0 2px 0 #c48e00,0 0 8px #0005;animation:flt 1.1s ease-out forwards;pointer-events:none;z-index:6;white-space:nowrap;direction:ltr}
+@keyframes flt{to{transform:translateY(-70px);opacity:0}}
+.combo{position:absolute;inset:0;display:grid;place-items:center;pointer-events:none;z-index:6}
+.combo b{font-size:44px;font-weight:900;color:var(--gold);-webkit-text-stroke:2px #8a5a00;animation:combo 1.2s ease-out forwards}
+@keyframes combo{0%{transform:scale(.2) rotate(-10deg);opacity:0}25%{transform:scale(1.15);opacity:1}75%{opacity:1}100%{transform:scale(1) translateY(-30px);opacity:0}}
+/* battle */
+.scene{position:absolute;inset:0;width:100%;height:100%}
+.wv{animation:wv 3s linear infinite}.wv.b{animation-duration:5s;animation-direction:reverse}
+@keyframes wv{to{transform:translateX(60px)}}
+.rock{animation:rock 3s ease-in-out infinite;transform-box:fill-box;transform-origin:50% 90%}
+@keyframes rock{25%{transform:rotate(3deg) translateY(-3px)}75%{transform:rotate(-3deg) translateY(2px)}}
+.hit{animation:hit .5s}
+@keyframes hit{20%{transform:translateX(-10px) rotate(-6deg)}60%{transform:translateX(8px) rotate(4deg)}}
+.sink{animation:sink 1.8s ease-in forwards}
+@keyframes sink{to{transform:translateY(160px) rotate(-25deg);opacity:.4}}
+.flee{animation:flee 1.8s ease-in forwards}
+@keyframes flee{to{transform:translateX(260px)}}
+.tn{animation:tn 1.6s ease-in-out infinite;transform-box:fill-box;transform-origin:top center}
+@keyframes tn{50%{transform:rotate(12deg)}}
+.ex{animation:ex .7s ease-out forwards;transform-box:fill-box;transform-origin:center}
+@keyframes ex{from{transform:scale(.2);opacity:1}to{transform:scale(1.7);opacity:0}}
+.hp{position:absolute;top:8px;inset-inline-start:10px;display:flex;align-items:center;gap:4px;background:rgba(0,0,0,.35);color:#fff;padding:4px 10px;border-radius:999px;font-weight:800;font-size:14px;z-index:2}
+.hp i{width:16px;height:14px;background:var(--coral);clip-path:path('M8 14 L1 6 A4 4 0 0 1 8 2 A4 4 0 0 1 15 6Z');display:inline-block}
+.hp i.off{background:#ffffff40}
+/* dig */
+.dig{position:absolute;inset:8px;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.tile{position:relative;border-radius:18px;background:radial-gradient(ellipse at 50% 60%,#e7b45f 0 45%,#d79c42 46% 60%,transparent 61%),rgba(0,0,0,.06);padding:0;min-height:0;overflow:visible}
+.tile.ready{animation:pulse2 1s infinite;box-shadow:0 0 0 3px var(--gold)}
+@keyframes pulse2{50%{transform:scale(1.06)}}
+.tile svg{position:absolute;inset:8%;width:84%;height:84%}
+.tile.open{background:rgba(0,0,0,.12)}
+.tile.open svg{animation:reveal .5s ease-out}
+@keyframes reveal{from{transform:translateY(20px) scale(.3);opacity:0}}
+.tile.crab svg{animation:reveal .5s,scuttle .3s .5s 4}
+@keyframes scuttle{50%{transform:translateX(6px)}}
+.digmsg{position:absolute;bottom:6px;left:0;right:0;text-align:center;font-weight:800;color:#5a3a10;font-size:15px;pointer-events:none}
+/* keypad */
+.pad{direction:ltr;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:7px;margin-top:10px}
+.pad button{background:var(--card);font-size:24px;font-weight:800;min-height:50px;box-shadow:0 4px 0 rgba(0,0,0,.18)}
+.pad button:active{transform:translateY(3px);box-shadow:0 1px 0 rgba(0,0,0,.18)}
+.pad .ck{grid-row:span 2;background:var(--leaf);color:#fff;font-size:21px;box-shadow:0 4px 0 #168a4f}
+.pad .sm{font-size:19px}
+.pad.off{opacity:.45;pointer-events:none}
+/* sheet */
+.sheet{position:fixed;left:0;right:0;bottom:0;max-width:560px;margin:0 auto;background:var(--card);border-radius:24px 24px 0 0;padding:18px 18px 22px;box-shadow:0 -8px 30px rgba(0,0,0,.3);transform:translateY(110%);transition:transform .3s ease;z-index:20}
+.sheet.on{transform:none}
+.sheet h3{margin:0;font-size:22px;color:var(--coral2)}
+.sheet p{margin:8px 0 0;font-size:17px}
+.sheet .big{margin-top:14px}
+/* shop */
+.shopgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px;margin-top:12px}
+.item{background:var(--card);border-radius:20px;padding:10px;text-align:center;box-shadow:0 5px 0 rgba(0,0,0,.15)}
+.item svg{width:100%;height:96px}
+.item b{display:block}
+.item button{width:100%;margin-top:6px;font-weight:800;min-height:44px;background:var(--gold);color:#4a3200}
+.item button.own{background:var(--leaf);color:#fff}.item button.wear{background:var(--coral);color:#fff}
+.item button:disabled{opacity:.5}
+.preview{text-align:center}.preview svg{width:150px;height:170px}
+/* done */
+.done{text-align:center}
+.done h2{font-size:38px;line-height:1.05;margin:4px 0}
+.done .sc{font-size:19px;margin:6px 0 0}
+.done .hero-ch svg{width:130px;height:150px}
+.bigstars svg{width:min(300px,90%);height:auto}
+.conf{position:fixed;top:-20px;width:12px;height:16px;border-radius:3px;z-index:30;pointer-events:none;animation:fall 2.4s linear forwards}
+@keyframes fall{to{transform:translateY(110vh) rotate(720deg)}}
+.toast{position:fixed;top:12px;left:50%;transform:translate(-50%,-150%);background:#1b2836;color:#fff;padding:10px 16px;border-radius:999px;font-weight:700;z-index:40;transition:transform .3s;font-size:15px;max-width:92vw}
+.toast.on{transform:translate(-50%,0)}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+@media(max-width:380px){.grades{grid-template-columns:repeat(4,minmax(0,1fr))}.hero h1{font-size:38px}.chip span{display:none}}
+@media(max-height:680px){.pad button{min-height:44px;font-size:21px}.comp{width:50px;height:58px}}
+</style>
+</head>
+<body>
+
+<section id="home" class="screen on">
+  <div class="hero">
+    <svg viewBox="0 0 400 190" aria-hidden="true">
+      <circle cx="320" cy="48" r="30" fill="#ffd34d"/><circle cx="320" cy="48" r="42" fill="#ffd34d" opacity=".25"/>
+      <path d="M0 150 Q50 138 100 150 T200 150 T300 150 T400 150 V190 H0Z" fill="rgba(255,255,255,.18)"/>
+      <ellipse cx="200" cy="160" rx="150" ry="30" fill="#c99a4a"/><ellipse cx="200" cy="152" rx="140" ry="28" fill="#ffe0a0"/>
+      <g class="sway"><path d="M210 150 Q205 100 222 62" stroke="#8a5a2b" stroke-width="9" fill="none" stroke-linecap="round"/>
+      <g fill="#22b569"><path d="M222 62 Q190 40 158 58 Q192 52 222 66Z"/><path d="M222 62 Q250 34 288 46 Q252 50 224 68Z"/><path d="M222 62 Q214 26 190 14 Q222 30 226 64Z"/><path d="M222 62 Q262 66 278 92 Q250 72 222 66Z"/></g></g>
+      <rect x="110" y="122" width="54" height="34" rx="6" fill="#a8642c"/><rect x="106" y="114" width="62" height="14" rx="6" fill="#c97b38"/><rect x="132" y="120" width="10" height="14" rx="2" fill="#ffc130"/>
+      <text x="272" y="142" font-family="Rubik" font-weight="900" font-size="34" fill="#ff6a48">7×8</text>
+      <text x="60" y="108" font-family="Rubik" font-weight="900" font-size="26" fill="#fff" opacity=".85">%</text>
+      <text x="350" y="112" font-family="Rubik" font-weight="900" font-size="24" fill="#fff" opacity=".85">x</text>
+    </svg>
+    <h1>אי המספרים</h1>
+    <p>פוצצו בלונים, דוגו דגים, הטביעו ספינות וחפרו אוצרות — בעזרת חשבון!</p>
+  </div>
+  <div class="panel">
+    <h2>מי משחק?</h2>
+    <div class="plist" id="plist"></div>
+    <h2 style="margin-top:6px">שחקן חדש</h2>
+    <label for="nm">שם</label>
+    <input type="text" id="nm" maxlength="14" autocomplete="off" placeholder="למשל: נועה">
+    <label>כיתה</label>
+    <div class="grades" id="grades"></div>
+    <label>בחרו דמות</label>
+    <div class="chars" id="chars"></div>
+    <p class="err" id="err"></p>
+    <button class="big" id="addBtn">יוצאים למסע!</button>
+  </div>
+  <div class="savebox">
+    <div id="saveState">ההתקדמות נשמרת אוטומטית במכשיר הזה</div>
+    <button id="exportBtn">גיבוי ההתקדמות</button><button id="importBtn">שחזור מגיבוי</button>
+  </div>
+</section>
+
+<section id="backup" class="screen">
+  <div class="bar"><button class="ib" data-back="home" aria-label="חזרה">→</button><b style="font-size:20px">גיבוי ושחזור</b></div>
+  <div class="panel">
+    <h2 id="bkTitle"></h2>
+    <p id="bkText" style="margin-top:0"></p>
+    <textarea id="bkArea" spellcheck="false"></textarea>
+    <p class="err" id="bkErr"></p>
+    <button class="big alt" id="bkBtn"></button>
+  </div>
+</section>
+
+<section id="map" class="screen">
+  <div class="bar">
+    <button class="ib" id="homeBtn" aria-label="החלפת שחקן">→</button>
+    <div class="chip" id="pchip"></div>
+    <select id="gradeSel" aria-label="כיתה"></select>
+    <span class="coins" id="coins"></span>
+  </div>
+  <div class="bar" style="margin-top:-4px">
+    <button class="ib" id="shopBtn" style="flex:1;background:var(--gold);color:#4a3200">חנות הפרסים</button>
+    <button class="ib" id="muteBtn">צליל: פועל</button>
+  </div>
+  <div class="tabs" id="tabs"></div>
+  <div class="whead"><h2 id="wname"></h2><p id="wdesc"></p></div>
+  <div id="resumeBox"></div>
+  <svg id="mapsvg" role="img" aria-label="מפת התחנות"></svg>
+</section>
+
+<section id="shop" class="screen">
+  <div class="bar"><button class="ib" data-back="map" aria-label="חזרה">→</button><b style="font-size:22px">חנות הפרסים</b><span class="coins" id="shopCoins"></span></div>
+  <div class="panel preview"><div id="shopPrev"></div><p style="margin:0;color:var(--muted)">קונים פריטים במטבעות ומלבישים את הדמות. פריט אחד מכל סוג.</p></div>
+  <div class="shopgrid" id="shopGrid"></div>
+</section>
+
+<section id="play" class="screen">
+  <div class="bar" style="margin-bottom:8px">
+    <button class="ib" id="quitBtn" aria-label="יציאה למפה">✕</button>
+    <div class="prog" id="prog"></div>
+    <span class="coins" id="pcoins"></span>
+  </div>
+  <div class="banner" id="banner">
+    <div class="comp"><div id="compCh"></div><div class="bubble" id="bubble"></div></div>
+    <div class="qa">
+      <div class="fig" id="qfig"></div>
+      <div class="q" id="qtext"></div>
+      <div class="ans" id="ans" aria-live="polite"></div>
+    </div>
+    <button class="hintb" id="hintBtn">רמז</button>
+  </div>
+  <div class="field" id="field"></div>
+  <div class="pad" id="pad"></div>
+</section>
+
+<section id="done" class="screen">
+  <div class="panel done">
+    <div class="hero-ch" id="doneCh"></div>
+    <div class="bigstars" id="bigstars"></div>
+    <h2 id="dtitle"></h2>
+    <p class="sc" id="dnote"></p>
+    <p class="sc" id="dscore"></p>
+    <button class="big alt" id="nextBtn">לתחנה הבאה</button>
+    <button class="big" id="againBtn">שוב את התחנה</button>
+    <button class="big ghost" id="toMapBtn">חזרה למפה</button>
+  </div>
+</section>
+
+<div class="sheet" id="sheet"><h3 id="shT"></h3><p id="shA"></p><p id="shE"></p><button class="big alt" id="shBtn">המשך</button></div>
+<div class="toast" id="toast"></div>
+
+<script>
+{
+const GL=['א','ב','ג','ד','ה','ו','ז','ח'];
+const COLORS=['#ff6a48','#7a5cff','#22b569','#ff9f1c','#e84393','#1e90ff','#00a896','#c0392b'];
+const WORLDS=[
+ {id:'basic',name:'אי הפעולות',short:'פעולות',from:1,desc:'חיבור, חיסור, כפל וחילוק'},
+ {id:'geo',name:'אי הצורות',short:'גיאומטריה',from:2,desc:'היקף, שטח, זוויות ונפח'},
+ {id:'alg',name:'אי הנעלם',short:'אלגברה',from:2,desc:'מספר חסר ומשוואות'},
+ {id:'pct',name:'אי האחוזים',short:'אחוזים',from:5,desc:'אחוזים, הנחות ויחס'}];
+const NST=10;
+const MODE_OF=i=>i===NST-1?'boss':['balloons','fish','battle','dig'][i%4];
+const MODE_INFO={balloons:{n:'בלונים',say:'פוצצו את הבלון עם התשובה הנכונה!'},fish:{n:'דייג',say:'תפסו את הדג עם התשובה הנכונה!'},
+ battle:{n:'קרב ספינות',say:'כל תשובה נכונה היא יריית תותח! צריך 6 פגיעות.'},dig:{n:'חפירת אוצר',say:'כל תשובה נכונה = חפירה אחת. מצאו את התיבה!'},
+ boss:{n:'התמנון הענק',say:'התמנון הענק! צריך 8 פגיעות כדי לנצח אותו!'}};
+const $=id=>document.getElementById(id);
+const shuffle=a=>{for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+
+const R=(a,b)=>a+Math.floor(Math.random()*(b-a+1));
+const pick=a=>a[R(0,a.length-1)];
+const fmt=n=>{const s=Math.abs(n)>=10000?Math.abs(n).toLocaleString('en-US'):String(Math.abs(n));return (n<0?'−':'')+s};
+const fp=n=>n<0?'('+fmt(n)+')':fmt(n);
+const M=s=>'<span class="m">'+s+'</span>';
+const gcd=(a,b)=>b?gcd(b,a%b):a;
+
+
+/* ---------- question generators: return {q, a, hint, ex, fig?} ---------- */
+function basic(g,L){
+ const ops=['+','-'];if(g>=2)ops.push('×');if(g>=3)ops.push('÷');if(g>=4)ops.push('ord','×');if(g>=7)ops.push('neg','neg');
+ const op=pick(ops),k=.5+L*.125;
+ if(op==='+'||op==='-'){
+  const mx=Math.max(10,Math.round([20,100,1000,10000,100000,100000,1000,1000][g-1]*k));
+  if(op==='+'){const a=R(1,mx-1),b=R(1,mx-a);return{q:M(`${fmt(a)} + ${fmt(b)} = ?`),a:a+b,
+   hint:g<=2?`אפשר להתחיל מ-${a} ולספור קדימה ${b} צעדים.`:'חברו קודם את האחדות, אחר כך את העשרות ואת המאות. אל תשכחו את ה"שארית".',
+   ex:M(`${fmt(a)} + ${fmt(b)} = ${fmt(a+b)}`)}}
+  const a=R(2,mx),b=R(1,a-1);return{q:M(`${fmt(a)} − ${fmt(b)} = ?`),a:a-b,
+   hint:`אפשר לבדוק בעזרת חיבור: כמה צריך להוסיף ל-${b} כדי להגיע ל-${a}?`,ex:M(`${fmt(a)} − ${fmt(b)} = ${fmt(a-b)}`)+' כי '+M(`${fmt(a-b)} + ${fmt(b)} = ${fmt(a)}`)}
+ }
+ let a,b;
+ if(g===2){a=pick([2,5,10]);b=R(1,Math.min(10,4+L*2))}
+ else if(g===3){a=R(2,Math.min(10,4+L*2));b=R(2,10)}
+ else if(g===4){a=R(11,20+L*20);b=R(2,9)}
+ else{a=R(11,25+L*15);b=L<2?R(2,9):R(11,12+L*5)}
+ if(op==='×'){const t=Math.floor(a/10)*10,u=a%10;return{q:M(`${a} × ${b} = ?`),a:a*b,
+  hint:a<=10?`כפל זה חיבור חוזר: ${b} פעמים ${a}.`:`פרקו את ${a} ל-${t} ו-${u}: ${t}×${b} ועוד ${u}×${b}.`,
+  ex:a>10&&u?M(`${t}×${b} + ${u}×${b} = ${t*b} + ${u*b} = ${a*b}`):M(`${a} × ${b} = ${a*b}`)}}
+ if(op==='÷'){if(a>12&&g<6){a=R(2,9+L)}const t=a*b;return{q:M(`${fmt(t)} ÷ ${b} = ?`),a:a,
+  hint:`חפשו איזה מספר כפול ${b} נותן ${t}.`,ex:M(`${b} × ${a} = ${t}`)+' ולכן '+M(`${t} ÷ ${b} = ${a}`)}}
+ if(op==='ord'){const x=R(2,10+L*5),y=R(2,9),z=R(2,9);
+  if(Math.random()<.5)return{q:M(`${x} + ${y} × ${z} = ?`),a:x+y*z,hint:'קודם כפל וחילוק, ורק אחר כך חיבור וחיסור.',ex:M(`${y}×${z} = ${y*z}`)+' ← '+M(`${x} + ${y*z} = ${x+y*z}`)};
+  return{q:M(`(${x} + ${y}) × ${z} = ?`),a:(x+y)*z,hint:'מה שבתוך הסוגריים — מחשבים ראשון.',ex:M(`${x}+${y} = ${x+y}`)+' ← '+M(`${x+y}×${z} = ${(x+y)*z}`)}}
+ /* negatives */
+ const m=8+L*6;let p=R(-m,m)||-3,q=R(-m,m)||4;const o=pick(['+','−','×']);
+ const res=o==='+'?p+q:o==='−'?p-q:p*q;
+ return{q:M(`${fmt(p)} ${o} ${fp(q)} = ?`),a:res,
+  hint:o==='×'?'סימנים שווים נותנים פלוס, סימנים שונים נותנים מינוס.':'חשבו על ציר המספרים: חיבור שלילי = זזים שמאלה, חיסור שלילי = זזים ימינה.',
+  ex:M(`${fmt(p)} ${o} ${fp(q)} = ${fmt(res)}`)}
+}
+
+function pct(g,L){
+ const types=['pof','pof'];if(g>=6)types.push('what','ratio','share');if(g>=7)types.push('disc','incr');
+ const t=pick(types);
+ if(t==='pof'){const ps=L<2?[50,10,25]:L<3?[50,10,25,20,75]:[10,20,25,75,5,15,40,60];const p=pick(ps);const u=100/gcd(p,100);
+  const N=u*R(1,Math.max(2,Math.floor((40+L*90)/u)));const a=N*p/100;
+  return{q:`כמה זה ${M(p+'%')} מתוך ${M(fmt(N))}?`,a,hint:'50% זה חצי, 25% זה רבע, 10% זה חלק עשירי. אפשר למצוא 10% ולבנות מזה.',
+   ex:M(`${fmt(N)} × ${p} ÷ 100 = ${fmt(a)}`)}}
+ if(t==='what'){let p,b;do{p=pick([10,20,25,50,75,40,5,60]);b=pick([20,40,50,80,200,120,300])}while(b*p%100);const a=b*p/100;
+  return{q:`${M(a)} מתוך ${M(b)} זה כמה אחוזים?`,a:p,hint:'חלקו את החלק בשלם, ואז כפלו ב-100.',ex:M(`${a} ÷ ${b} × 100 = ${p}%`)}}
+ if(t==='ratio'||t==='share'){let x=R(1,5),y=R(1,5);if(x===y)y=x+1;const k=R(2,3+L*2);
+  if(t==='ratio')return{q:`היחס בין תפוחים לאגסים הוא ${M(x+':'+y)}. יש ${M(x*k)} תפוחים. כמה אגסים יש?`,a:y*k,long:1,
+   hint:`בכמה כפלו את ${x} כדי לקבל ${x*k}? כפלו גם את ${y} באותו מספר.`,ex:M(`${x*k} ÷ ${x} = ${k}`)+' ← '+M(`${y} × ${k} = ${y*k}`)};
+  return{q:`מחלקים ${M((x+y)*k)} סוכריות בין דנה ליוסי ביחס ${M(x+':'+y)}. כמה מקבלת דנה?`,a:x*k,long:1,
+   hint:`יש בסך הכול ${x+y} חלקים. מצאו כמה שווה חלק אחד.`,ex:M(`${(x+y)*k} ÷ ${x+y} = ${k}`)+' ← '+M(`${x} × ${k} = ${x*k}`)}}
+ const P=R(2,10+L*8)*20,p=pick([10,20,25,30,40,50]);
+ if(t==='disc'){const a=P*(100-p)/100;return{q:`חולצה עולה ${M(P+' ₪')} ויש עליה הנחה של ${M(p+'%')}. כמה משלמים?`,a,long:1,
+  hint:`הנחה של ${p}% אומרת שמשלמים ${100-p}% מהמחיר.`,ex:M(`${P} × ${100-p} ÷ 100 = ${a}`)}}
+ const a=P*(100+p)/100;return{q:`מחיר של משחק היה ${M(P+' ₪')} והתייקר ב-${M(p+'%')}. מה המחיר החדש?`,a,long:1,
+  hint:`התייקרות של ${p}% אומרת שהמחיר החדש הוא ${100+p}% מהמחיר הישן.`,ex:M(`${P} × ${100+p} ÷ 100 = ${a}`)}
+}
+
+const term=(a,v='x')=>a===1?v:a===-1?'−'+v:fmt(a)+v;
+const plus=b=>b===0?'':b<0?` − ${-b}`:` + ${b}`;
+function alg(g,L){
+ if(g<=3){const a=R(1,g===2?20+L*10:50+L*40),b=R(1,g===2?20+L*10:50+L*40);
+  if(Math.random()<.5)return{q:M(`□ + ${b} = ${a+b}`),a,hint:`איזה מספר ועוד ${b} נותן ${a+b}? אפשר לחסר: ${a+b} פחות ${b}.`,ex:M(`${a+b} − ${b} = ${a}`)};
+  return{q:M(`${a+b} − □ = ${a}`),a:b,hint:`כמה צריך להוריד מ-${a+b} כדי להגיע ל-${a}?`,ex:M(`${a+b} − ${a} = ${b}`)}}
+ if(g<=5){const x=R(2,9+L),b=R(2,9+L);
+  if(g===5&&L>=2){const c=R(1,15);return{q:M(`${b} × □ + ${c} = ${b*x+c}`),a:x,hint:`קודם בטלו את ה-${c}, ואז חלקו ב-${b}.`,ex:M(`${b*x+c} − ${c} = ${b*x}`)+' ← '+M(`${b*x} ÷ ${b} = ${x}`)}}
+  if(Math.random()<.5)return{q:M(`□ × ${b} = ${x*b}`),a:x,hint:`חלקו את ${x*b} ב-${b}.`,ex:M(`${x*b} ÷ ${b} = ${x}`)};
+  return{q:M(`${x*b} ÷ □ = ${b}`),a:x,hint:`${b} כפול איזה מספר נותן ${x*b}?`,ex:M(`${x*b} ÷ ${b} = ${x}`)}}
+ const neg=g>=7,lo=neg?-12:1;
+ let x=R(lo,12+L*2)||2,a=R(2,5+L)*(neg&&Math.random()<.3?-1:1),b=R(neg?-20:1,20);
+ const h='מה שעושים לצד אחד של המשוואה — עושים גם לצד השני.';
+ if(g===6||(L<2)){const c=a*x+b;return{q:M(`${term(a)}${plus(b)} = ${fmt(c)}`),a:x,hint:h,
+  ex:M(`${term(a)} = ${fmt(c)} − ${fp(b)} = ${fmt(c-b)}`)+' ← '+M(`x = ${fmt(c-b)} ÷ ${fp(a)} = ${fmt(x)}`)}}
+ const kind=g>=8?pick(['two','par','sub']):'two';
+ if(kind==='two'){let c=R(1,5);if(c===a)c=a+1;const d=a*x+b-c*x;
+  return{q:M(`${term(a)}${plus(b)} = ${term(c)}${plus(d)}`),a:x,hint:'העבירו את כל ה-x לצד אחד ואת המספרים לצד השני.',
+   ex:M(`${term(a-c)} = ${fmt(d-b)}`)+' ← '+M(`x = ${fmt(x)}`)}}
+ if(kind==='par'){const k=R(2,6),m=R(-6,9)||3;return{q:M(`${k}(x${plus(m)}) = ${fmt(k*(x+m))}`),a:x,hint:`חלקו את שני הצדדים ב-${k}, או פתחו סוגריים.`,
+  ex:M(`x${plus(m)} = ${fmt(x+m)}`)+' ← '+M(`x = ${fmt(x)}`)}}
+ const v=R(-5,6)||2,p=R(2,5),q=R(-9,9);const r=p*v*v+q;
+ return{q:`מה הערך של ${M(`${p}x²${plus(q)}`)} כאשר ${M(`x = ${fmt(v)}`)}?`,a:r,long:1,hint:'הציבו את המספר במקום x. קודם חזקה, אחר כך כפל, ובסוף חיבור.',
+  ex:M(`${p}·${fp(v)}² ${plus(q)} = ${p}·${v*v}${plus(q)} = ${fmt(r)}`)}
+}
+
+function svgRect(w,h,lw,lh,sq){const W=sq?110:Math.min(180,60+w*8),H=sq?110:Math.min(110,40+h*7);const x=(220-W)/2,y=(150-H)/2;
+ return `<svg viewBox="0 0 220 150"><rect x="${x}" y="${y}" width="${W}" height="${H}" rx="4" fill="#ffc13044" stroke="currentColor" stroke-width="3"/>
+ <text x="110" y="${y+H+22}" text-anchor="middle" font-weight="800" font-size="18" fill="currentColor">${lw}</text>
+ <text x="${x-10}" y="${y+H/2+6}" text-anchor="end" font-weight="800" font-size="18" fill="currentColor">${lh}</text></svg>`}
+function svgTri(lb,lh,right,lc){return right?
+ `<svg viewBox="0 0 220 150"><path d="M50 125 H170 V25Z" fill="#7a5cff33" stroke="currentColor" stroke-width="3" stroke-linejoin="round"/><path d="M156 125 V111 H170" fill="none" stroke="currentColor" stroke-width="2"/>
+ <text x="110" y="146" text-anchor="middle" font-weight="800" font-size="17" fill="currentColor">${lb}</text><text x="182" y="80" font-weight="800" font-size="17" fill="currentColor">${lh}</text>
+ <text x="96" y="66" text-anchor="end" font-weight="800" font-size="17" fill="currentColor">${lc}</text></svg>`:
+ `<svg viewBox="0 0 220 150"><path d="M30 125 H190 L120 25Z" fill="#7a5cff33" stroke="currentColor" stroke-width="3" stroke-linejoin="round"/><path d="M120 25 V125" stroke="currentColor" stroke-width="2" stroke-dasharray="5 4"/>
+ <text x="110" y="146" text-anchor="middle" font-weight="800" font-size="17" fill="currentColor">${lb}</text><text x="128" y="84" font-weight="800" font-size="17" fill="currentColor">${lh}</text></svg>`}
+function svgTrap(a,b,h){return `<svg viewBox="0 0 220 150"><path d="M25 120 H195 L150 35 H70Z" fill="#22b56933" stroke="currentColor" stroke-width="3" stroke-linejoin="round"/><path d="M110 35 V120" stroke="currentColor" stroke-width="2" stroke-dasharray="5 4"/>
+ <text x="110" y="26" text-anchor="middle" font-weight="800" font-size="17" fill="currentColor">${a}</text><text x="110" y="142" text-anchor="middle" font-weight="800" font-size="17" fill="currentColor">${b}</text><text x="118" y="84" font-weight="800" font-size="17" fill="currentColor">${h}</text></svg>`}
+
+function geo(g,L){
+ const T=g<=3?['perR','perS']:g===4?['perR','areaR','miss']:g===5?['areaR','areaT','ang','miss']:g===6?['areaT','ang','adj','vol']:['pyth','pyth','trap','vol','ang','areaT'];
+ const t=pick(T),n=4+L*3;
+ if(t==='perR'||t==='areaR'||t==='miss'){const w=R(3,n+3),h=R(2,Math.max(2,w-1));
+  if(t==='perR')return{q:'מה ההיקף של המלבן?',fig:svgRect(w,h,w,h),a:2*(w+h),hint:'היקף = סכום כל הצלעות. במלבן יש שתי צלעות ארוכות ושתיים קצרות.',ex:M(`${w}+${h}+${w}+${h} = ${2*(w+h)}`)};
+  if(t==='areaR')return{q:'מה השטח של המלבן?',fig:svgRect(w,h,w,h),a:w*h,hint:'שטח מלבן = אורך × רוחב.',ex:M(`${w} × ${h} = ${w*h}`)};
+  return{q:`שטח המלבן הוא ${M(w*h)}. מה הרוחב?`,fig:svgRect(w,h,w,'?'),a:h,hint:'אורך × רוחב = שטח, אז רוחב = שטח ÷ אורך.',ex:M(`${w*h} ÷ ${w} = ${h}`)}}
+ if(t==='perS'){const s=R(2,n+4);return{q:'מה ההיקף של הריבוע?',fig:svgRect(s,s,s,'',1),a:4*s,hint:'בריבוע כל 4 הצלעות שוות.',ex:M(`4 × ${s} = ${4*s}`)}}
+ if(t==='areaT'){const b=2*R(2,4+L*2),h=R(2,6+L*3);return{q:'מה השטח של המשולש?',fig:svgTri(b,h),a:b*h/2,hint:'שטח משולש = בסיס × גובה ÷ 2.',ex:M(`${b} × ${h} ÷ 2 = ${b*h/2}`)}}
+ if(t==='ang'){const a=R(20,90),b=R(20,150-a);return{q:`במשולש יש זוויות של ${M(a+'°')} ו-${M(b+'°')}. מה גודל הזווית השלישית?`,long:1,a:180-a-b,hint:'סכום הזוויות בכל משולש הוא 180°.',ex:M(`180 − ${a} − ${b} = ${180-a-b}`)}}
+ if(t==='adj'){const a=R(20,160);return{q:`זווית אחת היא ${M(a+'°')}. מה גודל הזווית הצמודה לה?`,long:1,a:180-a,hint:'זוויות צמודות יחד יוצרות קו ישר — 180°.',ex:M(`180 − ${a} = ${180-a}`)}}
+ if(t==='vol'){const a=R(2,4+L),b=R(2,4+L),c=R(2,6+L);return{q:`מה הנפח של תיבה במידות ${M(`${a} × ${b} × ${c}`)}?`,long:1,a:a*b*c,hint:'נפח תיבה = אורך × רוחב × גובה.',ex:M(`${a}×${b}×${c} = ${a*b*c}`)}}
+ if(t==='trap'){const a=R(2,6+L*2),b=a+R(2,6),h=2*R(1,3+L);return{q:'מה השטח של הטרפז?',fig:svgTrap(a,b,h),a:(a+b)*h/2,hint:'שטח טרפז = (בסיס + בסיס) × גובה ÷ 2.',ex:M(`(${a}+${b}) × ${h} ÷ 2 = ${(a+b)*h/2}`)}}
+ const tr=pick(L<2?[[3,4,5],[6,8,10]]:[[3,4,5],[6,8,10],[5,12,13],[8,15,17],[9,12,15],[7,24,25]]),k=L>=3?R(1,2):1;
+ const [p,q,r]=tr.map(v=>v*k);
+ if(Math.random()<.6)return{q:'מה אורך היתר במשולש ישר הזווית?',fig:svgTri(p,q,1,'?'),a:r,hint:'משפט פיתגורס: a² + b² = c².',ex:M(`${p}² + ${q}² = ${p*p} + ${q*q} = ${r*r}`)+' ← '+M(`√${r*r} = ${r}`)};
+ return{q:'מה אורך הניצב החסר?',fig:svgTri(p,'?',1,r),a:q,hint:'משפט פיתגורס: ניצב² = יתר² − ניצב².',ex:M(`${r}² − ${p}² = ${r*r} − ${p*p} = ${q*q}`)+' ← '+M(`√${q*q} = ${q}`)};
+}
+const GEN={basic,geo,alg,pct};
+
+
+
+/* ---------- saving: on this device ---------- */
+try{navigator.storage&&navigator.storage.persist&&navigator.storage.persist()}catch(e){}
+const KEY='iMisparim.v1';
+let DB={players:[],cur:null,mute:false,t:0};
+function loadLocal(){try{const s=localStorage.getItem(KEY);if(s)return JSON.parse(s)}catch(e){}return null}
+const L0=loadLocal();if(L0)DB=Object.assign(DB,L0);
+function save(){DB.t=Date.now();try{localStorage.setItem(KEY,JSON.stringify(DB))}catch(e){}}
+function setSaveState(t){const el=$('saveState');if(el)el.textContent=t}
+function fixPlayers(){DB.players.forEach(p=>{p.char=p.char||'cat';p.owned=p.owned||[];p.wear=p.wear||{};p.coins=p.coins||0;
+ WORLDS.forEach(w=>{p.stars[w.id]=p.stars[w.id]||Array(NST).fill(0);if(p.skill[w.id]==null)p.skill[w.id]=2})})}
+fixPlayers();
+const cur=()=>DB.players.find(p=>p.id===DB.cur);
+function toast(t){const el=$('toast');el.textContent=t;el.classList.add('on');clearTimeout(toast.t);toast.t=setTimeout(()=>el.classList.remove('on'),2200)}
+
+/* ---------- sound ---------- */
+let AC=null;
+const ac=()=>{if(DB.mute)return null;try{AC=AC||new (window.AudioContext||window.webkitAudioContext)();if(AC.state==='suspended')AC.resume();return AC}catch(e){return null}};
+function tone(f,d,t='sine',when=0,vol=.16,f2){const A=ac();if(!A)return;const o=A.createOscillator(),g=A.createGain(),s=A.currentTime+when;o.type=t;o.frequency.setValueAtTime(f,s);
+ if(f2)o.frequency.exponentialRampToValueAtTime(f2,s+d);g.gain.setValueAtTime(vol,s);g.gain.exponentialRampToValueAtTime(.001,s+d);o.connect(g).connect(A.destination);o.start(s);o.stop(s+d)}
+function noise(d,vol=.3,freq=900,when=0){const A=ac();if(!A)return;const b=A.createBuffer(1,A.sampleRate*d,A.sampleRate),c=b.getChannelData(0);
+ for(let i=0;i<c.length;i++)c[i]=(Math.random()*2-1)*(1-i/c.length)**2;const s=A.createBufferSource(),f=A.createBiquadFilter(),g=A.createGain();
+ s.buffer=b;f.type='lowpass';f.frequency.value=freq;g.gain.value=vol;s.connect(f).connect(g).connect(A.destination);s.start(A.currentTime+when)}
+const SND={good:()=>{tone(660,.15,'triangle');tone(990,.25,'triangle',.12)},bad:()=>tone(220,.4,'sawtooth',0,.07,110),tap:()=>tone(520,.05,'square',0,.035),
+ pop:()=>{noise(.15,.5,3000);tone(900,.12,'square',0,.05,300)},boom:()=>{noise(.7,.6,500);tone(120,.5,'sine',0,.3,40)},
+ splash:()=>noise(.5,.35,1800),dig:()=>noise(.25,.3,700),coin:()=>{tone(988,.08,'square',0,.05);tone(1319,.25,'square',.08,.05)},
+ win:()=>[523,659,784,1047,1319].forEach((f,i)=>tone(f,.32,'triangle',i*.12)),fire:()=>{noise(.3,.5,1200);tone(200,.2,'square',0,.06,80)}};
+
+/* ---------- characters and items (drawn in a 100×110 box, head at 50,45) ---------- */
+const eyes=(y=44,c='#1b2836')=>`<g class="eye"><circle cx="39" cy="${y}" r="6.5" fill="#fff"/><circle cx="40" cy="${y+1}" r="3.6" fill="${c}"/><circle cx="41.5" cy="${y-.5}" r="1.2" fill="#fff"/></g><g class="eye"><circle cx="61" cy="${y}" r="6.5" fill="#fff"/><circle cx="62" cy="${y+1}" r="3.6" fill="${c}"/><circle cx="63.5" cy="${y-.5}" r="1.2" fill="#fff"/></g>`;
+const CHARS={
+ cat:{n:'חתול',d:()=>`<path d="M72 95 q22 -2 16 -26" stroke="#ff9f43" stroke-width="8" fill="none" stroke-linecap="round"/><ellipse cx="50" cy="92" rx="24" ry="17" fill="#ff9f43"/><ellipse cx="50" cy="96" rx="13" ry="10" fill="#ffe2bf"/>
+  <path d="M26 34 L29 8 L47 22Z" fill="#ff9f43"/><path d="M74 34 L71 8 L53 22Z" fill="#ff9f43"/><path d="M31 28 L32 15 L41 22Z" fill="#ffc0cb"/><path d="M69 28 L68 15 L59 22Z" fill="#ffc0cb"/>
+  <circle cx="50" cy="45" r="27" fill="#ffad5c"/>${eyes()}<path d="M46.5 53 h7 l-3.5 4z" fill="#e84393"/><path d="M43 59 q3.5 4 7 0 q3.5 4 7 0" stroke="#6b3e1a" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+  <g stroke="#6b3e1a" stroke-width="1.5" stroke-linecap="round"><path d="M30 52 h-12M30 56 l-11 3M70 52 h12M70 56 l11 3"/></g>`},
+ fox:{n:'שועל',d:()=>`<path d="M70 98 q26 0 24 -30 q-8 10 -14 12" fill="#ff7a2f"/><path d="M90 74 q4 -4 4 -6 q-6 6 -10 7z" fill="#fff"/><ellipse cx="50" cy="92" rx="23" ry="17" fill="#ff7a2f"/><ellipse cx="50" cy="96" rx="12" ry="10" fill="#fff"/>
+  <path d="M24 36 L24 4 L46 22Z" fill="#ff7a2f"/><path d="M76 36 L76 4 L54 22Z" fill="#ff7a2f"/><path d="M28 28 L28 12 L40 22Z" fill="#3b1d0e"/><path d="M72 28 L72 12 L60 22Z" fill="#3b1d0e"/>
+  <circle cx="50" cy="45" r="27" fill="#ff8c42"/><path d="M23 48 Q30 66 50 70 Q70 66 77 48 Q64 56 50 54 Q36 56 23 48Z" fill="#fff"/>${eyes(42)}<ellipse cx="50" cy="56" rx="4.5" ry="3.2" fill="#1b2836"/><path d="M45 62 q5 3 10 0" stroke="#1b2836" stroke-width="2" fill="none" stroke-linecap="round"/>`},
+ parrot:{n:'תוכי',d:()=>`<path d="M44 104 l-8 6 M56 104 l8 6" stroke="#ff9f1c" stroke-width="4" stroke-linecap="round"/><ellipse cx="50" cy="90" rx="22" ry="19" fill="#22b569"/><ellipse cx="50" cy="94" rx="12" ry="12" fill="#ffd34d"/><path d="M28 84 q-10 10 -4 22 q8 -6 10 -16z" fill="#168a4f"/><path d="M72 84 q10 10 4 22 q-8 -6 -10 -16z" fill="#168a4f"/>
+  <path d="M42 22 q-2 -18 8 -20 q-2 10 2 18z M50 20 q4 -18 14 -16 q-8 6 -8 18z" fill="#ff4d4d"/>
+  <circle cx="50" cy="45" r="26" fill="#2fcf7f"/>${eyes(40)}<path d="M42 50 Q50 46 60 50 Q64 60 54 68 Q54 60 46 58Z" fill="#ffb020"/><path d="M44 57 q6 2 10 0" stroke="#c47a00" stroke-width="1.5" fill="none"/>`},
+ robot:{n:'רובוט',d:()=>`<rect x="30" y="74" width="40" height="32" rx="9" fill="#8fa9c4"/><rect x="40" y="82" width="20" height="12" rx="3" fill="#2b3a4a"/><circle cx="46" cy="88" r="2.5" fill="#ff6a48"/><circle cx="54" cy="88" r="2.5" fill="#22b569"/>
+  <line x1="50" y1="20" x2="50" y2="6" stroke="#5c7690" stroke-width="3"/><circle cx="50" cy="5" r="5" fill="#ff6a48"/><rect x="18" y="38" width="8" height="16" rx="3" fill="#5c7690"/><rect x="74" y="38" width="8" height="16" rx="3" fill="#5c7690"/>
+  <rect x="24" y="20" width="52" height="50" rx="14" fill="#b8cde0"/><rect x="30" y="32" width="40" height="22" rx="8" fill="#1b2836"/>
+  <g class="eye"><circle cx="40" cy="43" r="5.5" fill="#4ee6ff"/></g><g class="eye"><circle cx="60" cy="43" r="5.5" fill="#4ee6ff"/></g><path d="M40 61 h20" stroke="#5c7690" stroke-width="3" stroke-linecap="round"/>`}};
+const ITEMS=[
+ {id:'flower',n:'פרח',slot:'side',price:40,d:()=>`<g transform="translate(74 24)">${[0,72,144,216,288].map(a=>`<circle cx="${Math.cos(a*Math.PI/180)*7}" cy="${Math.sin(a*Math.PI/180)*7}" r="6" fill="#ff7eb6"/>`).join('')}<circle r="5" fill="#ffd34d"/></g>`},
+ {id:'pirate',n:'כובע פיראטים',slot:'hat',price:60,d:()=>`<path d="M14 24 Q50 -10 86 24 Q50 12 14 24Z" fill="#1b1b1b"/><path d="M20 22 Q50 10 80 22" stroke="#ffc130" stroke-width="3" fill="none"/><circle cx="50" cy="8" r="5" fill="#fff"/><path d="M46 14 l8 -4 M46 10 l8 4" stroke="#fff" stroke-width="2"/>`},
+ {id:'glasses',n:'משקפי שמש',slot:'face',price:80,d:()=>`<rect x="28" y="36" width="20" height="14" rx="6" fill="#1b1b1b"/><rect x="52" y="36" width="20" height="14" rx="6" fill="#1b1b1b"/><path d="M48 41 h4 M28 40 l-6 -3 M72 40 l6 -3" stroke="#1b1b1b" stroke-width="3"/><path d="M32 40 l6 -2" stroke="#fff8" stroke-width="2"/>`},
+ {id:'phones',n:'אוזניות',slot:'side',price:100,d:()=>`<path d="M22 46 Q22 10 50 10 Q78 10 78 46" stroke="#7a5cff" stroke-width="6" fill="none"/><rect x="14" y="38" width="14" height="20" rx="6" fill="#7a5cff"/><rect x="72" y="38" width="14" height="20" rx="6" fill="#7a5cff"/>`},
+ {id:'crown',n:'כתר',slot:'hat',price:150,d:()=>`<path d="M28 24 L28 2 L39 13 L50 -4 L61 13 L72 2 L72 24Z" fill="#ffc130" stroke="#b47d00" stroke-width="2" stroke-linejoin="round"/><circle cx="50" cy="16" r="3.5" fill="#e84393"/><circle cx="38" cy="18" r="2.5" fill="#1e90ff"/><circle cx="62" cy="18" r="2.5" fill="#22b569"/>`},
+ {id:'cape',n:'גלימת גיבור',slot:'back',price:120,d:()=>`<path d="M30 74 Q20 96 16 112 L84 112 Q80 96 70 74Z" fill="#e0245e"/>`},
+ {id:'wizard',n:'כובע קוסם',slot:'hat',price:200,d:()=>`<path d="M24 24 L56 -14 L76 24Z" fill="#5b3fd1"/><ellipse cx="50" cy="24" rx="32" ry="6" fill="#4a30b8"/><circle cx="52" cy="6" r="3" fill="#ffd34d"/><circle cx="44" cy="16" r="2" fill="#ffd34d"/>`},
+ {id:'bow',n:'פפיון',slot:'neck',price:50,d:()=>`<path d="M50 74 L38 67 L38 81Z M50 74 L62 67 L62 81Z" fill="#1e90ff"/><circle cx="50" cy="74" r="4" fill="#1565c0"/>`}];
+function charSVG(p,cls='',onlyItem){const c=CHARS[p.char]||CHARS.cat;const wear=onlyItem?{x:onlyItem}:p.wear||{};const it=Object.values(wear).map(id=>ITEMS.find(i=>i.id===id)).filter(Boolean);
+ const back=it.filter(i=>i.slot==='back').map(i=>i.d()).join(''),front=it.filter(i=>i.slot!=='back').map(i=>i.d()).join('');
+ return `<svg class="ch ${cls}" viewBox="0 -16 100 128" aria-hidden="true">${back}${c.d()}${front}</svg>`}
+
+/* ---------- home ---------- */
+let newGrade=0,newChar='cat';
+function renderHome(){
+ $('plist').innerHTML=DB.players.length?DB.players.map(p=>`<button class="prof" data-id="${p.id}">${charSVG(p)}
+  <span><b>${esc(p.name)}</b><small>כיתה ${GL[p.grade-1]}׳ · ${totalStars(p)} כוכבים · ${p.coins} מטבעות</small></span><span class="go">ממשיכים ←</span></button>`).join(''):'<p class="empty">עוד אין שחקנים. צרו שחקן חדש למטה.</p>';
+ $('grades').innerHTML=GL.map((l,i)=>`<button data-g="${i+1}" class="${newGrade===i+1?'sel':''}" aria-label="כיתה ${l}">${l}</button>`).join('');
+ $('chars').innerHTML=Object.entries(CHARS).map(([k,c])=>`<button data-c="${k}" class="${newChar===k?'sel':''}">${charSVG({char:k},'idle')}${c.n}</button>`).join('');
+}
+const totalStars=p=>Object.values(p.stars).flat().reduce((a,b)=>a+b,0);
+function newPlayer(name,grade,char){const st={},sk={};WORLDS.forEach(w=>{st[w.id]=Array(NST).fill(0);sk[w.id]=2});
+ return{id:Date.now().toString(36),name,grade,char,color:COLORS[DB.players.length%COLORS.length],coins:0,stars:st,skill:sk,owned:[],wear:{}}}
+$('grades').onclick=e=>{const b=e.target.closest('button');if(!b)return;newGrade=+b.dataset.g;SND.tap();renderHome()};
+$('chars').onclick=e=>{const b=e.target.closest('button');if(!b)return;newChar=b.dataset.c;SND.tap();renderHome()};
+$('addBtn').onclick=()=>{const n=$('nm').value.trim();
+ if(!n){$('err').textContent='כתבו שם קודם';return}
+ if(!newGrade){$('err').textContent='בחרו כיתה';return}
+ $('err').textContent='';const p=newPlayer(n,newGrade,newChar);DB.players.push(p);DB.cur=p.id;$('nm').value='';newGrade=0;save();SND.win();openMap()};
+$('plist').onclick=e=>{const b=e.target.closest('.prof');if(!b)return;DB.cur=b.dataset.id;save();SND.tap();openMap()};
+document.querySelectorAll('[data-back]').forEach(b=>b.onclick=()=>b.dataset.back==='map'?openMap():(renderHome(),show('home')));
+
+/* backup */
+let bkMode='out';
+$('exportBtn').onclick=()=>{bkMode='out';$('bkTitle').textContent='קוד הגיבוי שלכם';$('bkText').textContent='העתיקו את הקוד ושמרו אותו (למשל בהודעה לעצמכם). במכשיר אחר לוחצים "שחזור מגיבוי" ומדביקים.';
+ $('bkArea').value=btoa(unescape(encodeURIComponent(JSON.stringify({players:DB.players}))));$('bkBtn').textContent='העתקת הקוד';$('bkErr').textContent='';show('backup')};
+$('importBtn').onclick=()=>{bkMode='in';$('bkTitle').textContent='שחזור מגיבוי';$('bkText').textContent='הדביקו כאן את קוד הגיבוי. השחקנים מהגיבוי יתווספו (שחקן קיים יתעדכן).';
+ $('bkArea').value='';$('bkBtn').textContent='שחזור';$('bkErr').textContent='';show('backup')};
+$('bkBtn').onclick=async()=>{if(bkMode==='out'){try{await navigator.clipboard.writeText($('bkArea').value);toast('הקוד הועתק')}catch(e){$('bkArea').select();$('bkErr').textContent='סמנו את הקוד והעתיקו ידנית'}return}
+ try{const d=JSON.parse(decodeURIComponent(escape(atob($('bkArea').value.trim()))));if(!Array.isArray(d.players))throw 0;
+  d.players.forEach(p=>{const i=DB.players.findIndex(q=>q.id===p.id);if(i>=0)DB.players[i]=p;else DB.players.push(p)});fixPlayers();save();toast('השחזור הצליח!');renderHome();show('home')}
+ catch(e){$('bkErr').textContent='הקוד לא תקין. בדקו שהעתקתם את כולו.'}};
+
+/* ---------- map ---------- */
+let world='basic',walkFrom=null;
+function show(id){if(id!=='play')$('sheet').classList.remove('on');document.querySelectorAll('.screen').forEach(s=>s.classList.toggle('on',s.id===id));window.scrollTo(0,0)}
+const coinHTML=n=>`<i></i>${n}`;
+function openMap(){const p=cur();if(!p){renderHome();return show('home')}
+ if(p.lastWorld)world=p.lastWorld;
+ if(p.grade<WORLDS.find(w=>w.id===world).from)world='basic';
+ $('pchip').innerHTML=charSVG(p)+`<span>${esc(p.name)}</span>`;
+ $('gradeSel').innerHTML=GL.map((l,i)=>`<option value="${i+1}" ${p.grade===i+1?'selected':''}>כיתה ${l}׳</option>`).join('');
+ $('coins').innerHTML=coinHTML(p.coins);$('muteBtn').textContent=DB.mute?'צליל: כבוי':'צליל: פועל';
+ $('tabs').innerHTML=WORLDS.map(w=>{const lk=p.grade<w.from;const s=p.stars[w.id].reduce((a,b)=>a+b,0);
+  return `<button data-w="${w.id}" class="${w.id===world?'sel':''} ${lk?'lk':''}">${w.short}<small>${lk?'מכיתה '+GL[w.from-1]+'׳':s+'/'+NST*3+' ★'}</small></button>`}).join('');
+ const W=WORLDS.find(w=>w.id===world);$('wname').textContent=W.name;$('wdesc').textContent=W.desc;
+ const r=p.run;$('resumeBox').innerHTML=r?`<button class="resume" id="resumeBtn">${charSVG(p,'idle').replace('<svg','<svg style="width:40px;height:46px;flex:none"')}<span>ממשיכים מאיפה שעצרנו: ${WORLDS.find(w=>w.id===r.world).name}, תחנה ${r.i+1} (שאלה ${r.qi+1})</span></button>`:'';
+ drawMap();show('map');
+ const tok=$('tok');if(tok&&walkFrom){const [fx,fy]=walkFrom;walkFrom=null;const to=tok.dataset.to;tok.style.transition='none';tok.style.transform=`translate(${fx}px,${fy}px)`;
+  tok.getBoundingClientRect();requestAnimationFrame(()=>{tok.style.transition='';tok.style.transform=to});setTimeout(()=>tok.scrollIntoView({block:'center',behavior:'smooth'}),200)}}
+const starPts=(cx,cy,r)=>{let s='';for(let i=0;i<10;i++){const a=Math.PI/5*i-Math.PI/2,rr=i%2?r*.45:r;s+=(cx+Math.cos(a)*rr).toFixed(1)+','+(cy+Math.sin(a)*rr).toFixed(1)+' '}return s};
+const mapPts=()=>[...Array(NST)].map((_,i)=>[180+Math.sin(i*1.25+.4)*100,70+i*104]);
+function badge(m,x,y){const g=`<circle cx="${x}" cy="${y}" r="15" fill="#fff" stroke="#1b283622" stroke-width="2"/>`;
+ if(m==='balloons')return g+`<ellipse cx="${x}" cy="${y-3}" rx="6" ry="7.5" fill="#ff6a48"/><path d="M${x} ${y+4} q-2 4 0 8" stroke="#555" fill="none"/>`;
+ if(m==='fish')return g+`<ellipse cx="${x-2}" cy="${y}" rx="8" ry="5" fill="#1e90ff"/><path d="M${x+5} ${y} l6 -5 v10z" fill="#1e90ff"/><circle cx="${x-6}" cy="${y-1}" r="1.3" fill="#fff"/>`;
+ if(m==='battle')return g+`<path d="M${x-9} ${y+3} h18 l-4 6 h-10z" fill="#8a5a2b"/><path d="M${x} ${y-10} v13 M${x+1} ${y-9} q8 5 0 10z" stroke="#5b3a1a" fill="#fff" stroke-width="1.5"/>`;
+ if(m==='dig')return g+`<path d="M${x-6} ${y-8} l9 9" stroke="#8a5a2b" stroke-width="3" stroke-linecap="round"/><path d="M${x+1} ${y-1} l7 3 -4 6 -6 -5z" fill="#7d8b99"/>`;
+ return g+`<circle cx="${x}" cy="${y-2}" r="8" fill="#8e44ad"/><circle cx="${x-3}" cy="${y-3}" r="2" fill="#fff"/><circle cx="${x+3}" cy="${y-3}" r="2" fill="#fff"/><path d="M${x-7} ${y+4} q-2 5 -4 6 M${x} ${y+5} v6 M${x+7} ${y+4} q2 5 4 6" stroke="#8e44ad" stroke-width="2.5" fill="none" stroke-linecap="round"/>`}
+function palm(x,y){return `<g class="sway"><path d="M${x} ${y} q-3 -26 6 -44" stroke="#8a5a2b" stroke-width="5" fill="none" stroke-linecap="round"/><g fill="#22b569"><path d="M${x+6} ${y-44} q-18 -10 -32 2 q16 -4 32 0z"/><path d="M${x+6} ${y-44} q16 -14 32 -6 q-16 0 -32 8z"/><path d="M${x+6} ${y-44} q-4 -18 -14 -24 q12 8 16 24z"/></g></g>`}
+function drawMap(){const p=cur(),st=p.stars[world],H=NST*104+60;const svg=$('mapsvg');svg.setAttribute('viewBox',`0 0 360 ${H}`);
+ const pts=mapPts();const curI=Math.max(0,st.findIndex((s,i)=>s===0&&(i===0||st[i-1]>0)));const allDone=st.every(s=>s>0);const tokI=allDone?NST-1:curI;
+ let o=[0,1,2].map(k=>`<g class="cloud" style="animation-duration:${38+k*14}s;animation-delay:-${k*13}s"><g transform="translate(0 ${120+k*330})" fill="#fff" opacity=".7"><ellipse cx="40" cy="0" rx="30" ry="13"/><ellipse cx="62" cy="-8" rx="22" ry="14"/><ellipse cx="80" cy="2" rx="22" ry="10"/></g></g>`).join('');
+ for(let i=0;i<NST+2;i++){const wx=(i*137)%320+10,wy=40+i*96;o+=`<path d="M${wx} ${wy} q8 -6 16 0 t16 0" stroke="#fff" stroke-width="3" fill="none" opacity=".35" stroke-linecap="round"/>`}
+ o+=`<path d="M${pts.map(q=>q.join(' ')).join(' L')}" fill="none" stroke="#fff" stroke-width="5" stroke-dasharray="2 12" stroke-linecap="round" stroke-linejoin="round" opacity=".85"/>`;
+ pts.forEach(([x,y],i)=>{const lock=i>0&&st[i-1]===0,done=st[i]>0,now=i===curI&&!allDone,m=MODE_OF(i);
+  o+=`<g class="st ${lock?'lock':''}" data-i="${i}" role="button" aria-label="תחנה ${i+1}, ${MODE_INFO[m].n}${lock?', נעולה':''}">
+  <ellipse cx="${x}" cy="${y+18}" rx="62" ry="24" fill="var(--sand2)"/><ellipse cx="${x}" cy="${y+12}" rx="58" ry="22" fill="var(--sand)"/>
+  ${i%3===1?palm(x+(x>180?-58:44),y+14):''}
+  ${now?`<circle class="pulse" cx="${x}" cy="${y}" r="32" fill="var(--coral)"/>`:''}
+  <circle cx="${x}" cy="${y+4}" r="30" fill="rgba(0,0,0,.2)"/><circle cx="${x}" cy="${y}" r="30" fill="${lock?'var(--lock)':done?'var(--gold)':'var(--coral)'}" stroke="#fff" stroke-width="4"/>
+  <text x="${x}" y="${y+8}" text-anchor="middle" font-family="Rubik" font-weight="900" font-size="24" fill="${done?'#4a3200':'#fff'}">${i+1}</text>
+  ${badge(m,x+(x>180?-34:34),y-24)}
+  ${[0,1,2].map(j=>`<polygon points="${starPts(x-22+j*22,y+46,9)}" fill="${j<st[i]?'var(--gold)':'rgba(255,255,255,.6)'}" stroke="${j<st[i]?'#b47d00':'none'}"/>`).join('')}</g>`});
+ const [cx,cy]=pts[NST-1];o+=`<g transform="translate(${cx+(cx>180?-80:56)} ${cy+30})"><rect x="0" y="-18" width="30" height="20" rx="3" fill="#a8642c"/><rect x="-2" y="-24" width="34" height="9" rx="4" fill="#c97b38"/><rect x="12" y="-20" width="6" height="8" fill="#ffc130"/></g>`;
+ const [tx,ty]=pts[tokI];const to=`translate(${tx+(tx>180?34:-34)}px,${ty-12}px)`;
+ o+=`<g id="tok" data-to="${to}" style="transform:${to}"><svg x="-24" y="-56" width="48" height="60" overflow="visible">${charSVG(p,'idle').replace('<svg class','<svg width="48" height="60" class')}</svg></g>`;
+ svg.innerHTML=o}
+$('mapsvg').onclick=e=>{const g=e.target.closest('.st');if(!g)return;if(g.classList.contains('lock')){SND.bad();toast('קודם צריך לעבור את התחנה הקודמת');return}startStation(+g.dataset.i)};
+$('tabs').onclick=e=>{const b=e.target.closest('button');if(!b)return;const w=WORLDS.find(x=>x.id===b.dataset.w);
+ if(cur().grade<w.from){SND.bad();toast('האי הזה נפתח מכיתה '+GL[w.from-1]+'׳');return}world=w.id;cur().lastWorld=world;save();SND.tap();openMap()};
+$('homeBtn').onclick=()=>{renderHome();show('home')};
+$('gradeSel').onchange=e=>{cur().grade=+e.target.value;save();openMap()};
+$('muteBtn').onclick=()=>{DB.mute=!DB.mute;save();$('muteBtn').textContent=DB.mute?'צליל: כבוי':'צליל: פועל';SND.tap()};
+$('resumeBox').onclick=e=>{if(!e.target.closest('#resumeBtn'))return;const r=cur().run;world=r.world;startStation(r.i,r)};
+$('shopBtn').onclick=()=>{SND.tap();openShop()};
+
+/* ---------- shop ---------- */
+function openShop(){const p=cur();$('shopCoins').innerHTML=coinHTML(p.coins);$('shopPrev').innerHTML=charSVG(p,'idle');
+ $('shopGrid').innerHTML=ITEMS.map(it=>{const own=p.owned.includes(it.id),worn=p.wear[it.slot]===it.id;
+  return `<div class="item">${charSVG(p,'',it.id)}<b>${it.n}</b>${own?`<button data-i="${it.id}" class="${worn?'wear':'own'}">${worn?'להוריד':'ללבוש'}</button>`:
+  `<button data-i="${it.id}" ${p.coins<it.price?'disabled':''}>${p.coins<it.price?'חסרים '+(it.price-p.coins):'קנייה · '+it.price}</button>`}</div>`}).join('');show('shop')}
+$('shopGrid').onclick=e=>{const b=e.target.closest('button');if(!b||b.disabled)return;const p=cur(),it=ITEMS.find(i=>i.id===b.dataset.i);
+ if(!p.owned.includes(it.id)){p.coins-=it.price;p.owned.push(it.id);p.wear[it.slot]=it.id;SND.coin();toast('קנית '+it.n+'!');confetti()}
+ else if(p.wear[it.slot]===it.id){delete p.wear[it.slot];SND.tap()}else{p.wear[it.slot]=it.id;SND.tap()}
+ save();openShop()};
+
+/* ---------- play engine ---------- */
+let S=null;const field=$('field');
+const MODES={};
+function startStation(i,resume){const p=cur();const m=MODE_OF(i);
+ S={i,mode:m,qi:0,NQ:m==='boss'?10:8,res:[],correct:0,streak:0,gain:0,locked:false,over:false,t:0};
+ if(resume){Object.assign(S,{qi:resume.qi,res:resume.res,correct:resume.correct,gain:resume.gain,hp:resume.hp,tiles:resume.tiles,found:resume.found})}
+ p.lastWorld=world;show('play');
+ $('compCh').innerHTML=charSVG(p,'idle');$('pcoins').innerHTML=coinHTML(p.coins);
+ $('pad').style.display=MODES[m].pad?'':'none';$('ans').style.display=MODES[m].pad?'':'none';renderPad();S.W=field.clientWidth;S.H=field.clientHeight;
+ MODES[m].setup(!!resume);say(MODE_INFO[m].say,3200);nextQ()}
+function saveRun(){const p=cur();if(!S||S.over){delete p.run}else p.run={world,i:S.i,qi:S.qi,res:S.res,correct:S.correct,gain:S.gain,hp:S.hp,tiles:S.tiles,found:S.found};save()}
+function nextQ(){const p=cur();const L=Math.max(0,Math.min(4,Math.round(p.skill[world]+S.i*.1-.3+(S.mode==='boss'?.6:0))));
+ let Q;for(let t=0;t<6;t++){Q=GEN[world](p.grade,L);if(Number.isFinite(Q.a)&&Q.q!==S.lastQ)break}
+ S.Q=Q;S.lastQ=Q.q;S.val='';S.hint=false;S.locked=false;S.awaitDig=false;
+ $('qfig').innerHTML=Q.fig||'';$('qtext').innerHTML=Q.q.replace('= ?','= <span style="color:var(--coral)">?</span>');$('qtext').className='q'+(Q.long?' long':'');
+ $('ans').className='ans';renderAns();renderProg();$('pad').classList.remove('off');
+ MODES[S.mode].onQ(Q)}
+function renderAns(){$('ans').textContent=S.val?S.val.replace('-','−'):'?'}
+function renderProg(){$('prog').innerHTML=[...Array(S.NQ)].map((_,i)=>`<i class="${S.res[i]===1?'ok':S.res[i]===0?'no':i===S.qi?'now':''}"></i>`).join('')}
+function renderPad(){$('pad').innerHTML=['7','8','9','⌫','4','5','6','ok','1','2','3','-','0','.'].map(k=>k==='ok'?`<button class="ck" data-k="ok">בדיקה</button>`:
+ `<button data-k="${k}" class="${'⌫-.'.includes(k)?'sm':''}" ${k==='⌫'?'aria-label="מחיקה"':''}>${k==='-'?'−':k}</button>`).join('')}
+function say(t,ms=2400){const b=$('bubble');b.innerHTML=t;b.classList.add('on');clearTimeout(say.t);say.t=setTimeout(()=>b.classList.remove('on'),ms)}
+function react(c){const el=$('compCh').firstElementChild;if(!el)return;el.classList.remove('idle','happy','sad');void el.getBBox;el.getBoundingClientRect();el.classList.add(c);setTimeout(()=>{el.classList.remove(c);el.classList.add('idle')},1100)}
+function key(k){if(!S||S.locked||S.awaitDig)return;
+ if(k==='ok')return typed();
+ if(k==='⌫')S.val=S.val.slice(0,-1);
+ else if(k==='-')S.val=S.val.startsWith('-')?S.val.slice(1):'-'+S.val;
+ else if(k==='.'){if(!S.val.includes('.'))S.val+=(S.val===''||S.val==='-')?'0.':'.'}
+ else if(S.val.replace(/[-.]/g,'').length<9)S.val+=k;
+ SND.tap();renderAns()}
+function typed(){if(S.val===''||S.val==='-'||S.val==='.')return;const ok=Math.abs(Number(S.val)-S.Q.a)<1e-9;S.locked=true;
+ $('ans').className='ans '+(ok?'ok':'no');$('pad').classList.add('off');MODES[S.mode].typed(ok);graded(ok)}
+function choose(it){if(S.locked)return;S.locked=true;const ok=it.v===S.Q.a;MODES[S.mode].pick(it,ok);graded(ok)}
+function graded(ok){const p=cur();S.res[S.qi]=ok?1:0;
+ if(ok){S.correct++;S.streak++;const c=(S.hint?5:10)+(S.streak>=3?5:0);S.gain+=c;p.coins+=c;p.skill[world]=Math.min(4,p.skill[world]+.3);
+  SND.good();react('happy');say(pick(['כל הכבוד!','מעולה!','אלוף!','בול!','וואו!','יפה מאוד!','איזה גאון!']));
+  floatText('+'+c,S.fx??S.W/2,S.fy??S.H/2);bumpCoins();if(S.streak>=3)combo('רצף '+S.streak+'!')}
+ else{S.streak=0;p.skill[world]=Math.max(0,p.skill[world]-.45);SND.bad();react('sad');say(pick(['לא נורא, ממשיכים!','כמעט!','טעויות עוזרות ללמוד!']));$('banner').classList.add('shake');setTimeout(()=>$('banner').classList.remove('shake'),400)}
+ S.fx=S.fy=null;renderProg();S.qiDone=S.qi+1;saveRunAfter()}
+function saveRunAfter(){const p=cur();p.run={world,i:S.i,qi:S.qi+1,res:S.res,correct:S.correct,gain:S.gain,hp:S.hp,tiles:S.tiles,found:S.found};if(S.qi+1>=S.NQ||S.over)delete p.run;save()}
+function bumpCoins(){const c=$('pcoins');c.innerHTML=coinHTML(cur().coins);c.classList.remove('bump');void c.offsetWidth;c.classList.add('bump');SND.coin()}
+function showSheet(){if(!$('play').classList.contains('on')||!S||S.over&&S.qi>=S.NQ)return;const Q=S.Q;$('shT').textContent='כמעט! בואו נלמד מזה';$('shA').innerHTML='התשובה הנכונה: <b>'+M(fmt(Q.a))+'</b>';$('shE').innerHTML='איך פותרים: '+Q.ex;$('sheet').classList.add('on')}
+$('shBtn').onclick=()=>{$('sheet').classList.remove('on');advance()};
+function after(ok,ms=1100){const s0=S;if(ok)S.auto=setTimeout(()=>S===s0&&advance(),ms);else setTimeout(()=>S===s0&&showSheet(),700)}
+function advance(){clearTimeout(S.auto);if(S.quit||!$('play').classList.contains('on'))return;S.qi++;if(S.over||S.qi>=S.NQ)return MODES[S.mode].end?MODES[S.mode].end(finish):finish();nextQ()}
+$('pad').onclick=e=>{const b=e.target.closest('button');if(b)key(b.dataset.k)};
+$('hintBtn').onclick=()=>{if(!S||S.locked)return;S.hint=true;SND.tap();say('<b>רמז:</b> '+S.Q.hint,7000)};
+$('quitBtn').onclick=()=>{clearTimeout(S&&S.auto);S&&(S.quit=1);$('sheet').classList.remove('on');openMap();toast('נשמר! אפשר להמשיך מאותה שאלה')};
+document.addEventListener('keydown',e=>{if(!$('play').classList.contains('on')||!S||!MODES[S.mode].pad)return;
+ if(/^[0-9]$/.test(e.key))key(e.key);else if(e.key==='Backspace')key('⌫');else if(e.key==='Enter')key('ok');else if(e.key==='-')key('-');else if(e.key==='.')key('.')});
+new ResizeObserver(()=>{if(!S||!$('play').classList.contains('on'))return;const w=field.clientWidth,h=field.clientHeight;if(!w||(w===S.W&&h===S.H))return;S.W=w;S.H=h;MODES[S.mode].resize&&MODES[S.mode].resize()}).observe(field);
+
+/* effects */
+function burst(x,y,colors,n=12,spread=70){for(let i=0;i<n;i++){const d=document.createElement('div');d.className='pt';const a=Math.random()*Math.PI*2,r=spread*(.5+Math.random()*.7);
+ d.style.cssText=`left:${x-5}px;top:${y-5}px;background:${pick(colors)};--dx:${Math.cos(a)*r}px;--dy:${Math.sin(a)*r}px`;field.appendChild(d);setTimeout(()=>d.remove(),800)}}
+function floatText(t,x,y){const d=document.createElement('div');d.className='flt';d.textContent=t;d.style.left=(x-20)+'px';d.style.top=(y-20)+'px';field.appendChild(d);setTimeout(()=>d.remove(),1200)}
+function combo(t){const d=document.createElement('div');d.className='combo';d.innerHTML='<b>'+t+'</b>';field.appendChild(d);setTimeout(()=>d.remove(),1300)}
+function tween(ms,fn,done){const t0=performance.now();const f=n=>{const k=Math.min(1,(n-t0)/ms);fn(k);if(k<1)requestAnimationFrame(f);else done&&done()};requestAnimationFrame(f)}
+function options(a){const s=new Set([a]);const c=shuffle([a+1,a-1,a+2,a-2,a+10,a-10,a*2,Math.round(a/2),a+5,a-5,-a,a+3]);
+ for(const x of c){if(s.size>=4)break;if(!Number.isInteger(x)||(a>=0&&x<0))continue;s.add(x)}let k=3;while(s.size<4)s.add(a+k++);return shuffle([...s])}
+const lblCls=v=>{const l=fmt(v).length;return l>5?'lbl-xs':l>3?'lbl-s':''};
+let lastT=0;function loop(t){const dt=Math.min(.05,(t-lastT)/1000||0);lastT=t;S&&(S.t+=dt);if(S&&$('play').classList.contains('on')&&MODES[S.mode].tick)MODES[S.mode].tick(dt);requestAnimationFrame(loop)}
+requestAnimationFrame(loop);
+
+/* --- mode: balloons --- */
+const BCOL=['#ff6a48','#7a5cff','#22b569','#ff9f1c','#e84393','#1e90ff'];
+const balloonSVG=c=>`<svg viewBox="0 0 84 128"><path d="M42 4 C70 4 80 28 76 48 C72 70 54 84 42 86 C30 84 12 70 8 48 C4 28 14 4 42 4Z" fill="${c}"/><ellipse cx="28" cy="28" rx="8" ry="14" fill="#fff" opacity=".35"/><path d="M37 85 L47 85 L42 92Z" fill="${c}"/><path d="M42 92 q-7 10 0 17 t0 17" stroke="#ffffffb0" fill="none" stroke-width="1.6"/></svg>`;
+MODES.balloons={pad:false,
+ setup(){field.className='field f-sky';field.innerHTML=[0,1].map(k=>`<svg style="position:absolute;top:${14+k*90}px;width:120px;height:50px;animation:drift ${30+k*12}s linear infinite;animation-delay:-${k*9}s" viewBox="0 0 120 50"><g fill="#fff" opacity=".85"><ellipse cx="40" cy="30" rx="30" ry="14"/><ellipse cx="66" cy="22" rx="24" ry="16"/><ellipse cx="88" cy="32" rx="24" ry="11"/></g></svg>`).join('')},
+ onQ(Q){field.querySelectorAll('.bal').forEach(e=>e.remove());const cw=S.W/4;const cols=shuffle(BCOL.slice());
+  S.items=options(Q.a).map((v,k)=>{const el=document.createElement('button');el.className='bal';el.setAttribute('aria-label','תשובה '+fmt(v));
+   el.innerHTML=balloonSVG(cols[k])+`<span class="${lblCls(v)}">${fmt(v)}</span>`;field.appendChild(el);
+   const it={el,v,col:cols[k],x:cw*k+cw/2-42,y:Math.max(10,S.H-230)+(k%2)*70,sp:24+Math.random()*12,ph:Math.random()*6,st:'fly'};
+   el.onclick=()=>choose(it);return it})},
+ resize(){const cw=S.W/4;(S.items||[]).forEach((it,k)=>it.x=cw*k+cw/2-42)},
+ tick(dt){for(const it of S.items||[]){if(it.st==='gone')continue;
+  if(it.st==='fly'){it.y-=it.sp*dt*(it.y>S.H-150?3:1);if(it.y<-140)it.y=S.H+10}
+  else if(it.st==='away')it.y-=320*dt;else if(it.st==='fall'){it.y+=260*dt;it.r=(it.r||0)+200*dt}
+  const x=it.x+Math.sin(S.t*1.4+it.ph)*10;it.el.style.transform=`translate(${x}px,${it.y}px) rotate(${(it.r||0)+Math.sin(S.t*1.4+it.ph)*4}deg)`}},
+ pick(it,ok){const r=it.el.getBoundingClientRect(),f=field.getBoundingClientRect();S.fx=r.left-f.left+42;S.fy=r.top-f.top+40;
+  if(ok){SND.pop();burst(S.fx,S.fy,[it.col,'#fff','#ffc130'],16);it.el.remove();it.st='gone';S.items.forEach(o=>{if(o!==it)o.st='away'})}
+  else{it.st='fall';it.el.style.opacity=.6;const c=S.items.find(o=>o.v===S.Q.a);c.el.classList.add('glow');c.sp=6}
+  after(ok,900)},
+ end(done){done()}};
+
+/* --- mode: fish --- */
+const FCOL=['#ff9f1c','#e84393','#1e90ff','#22b569','#ffd34d','#7a5cff'];
+const fishSVG=c=>`<svg viewBox="0 0 132 76"><path d="M104 38 L130 14 L124 38 L130 62Z" fill="${c}" opacity=".85"/><path d="M50 10 q14 -12 30 2z" fill="${c}" opacity=".85"/><ellipse cx="60" cy="38" rx="54" ry="30" fill="${c}"/><ellipse cx="60" cy="48" rx="40" ry="12" fill="#fff" opacity=".2"/><circle cx="22" cy="32" r="7" fill="#fff"/><circle cx="20" cy="32" r="3.5" fill="#1b2836"/><path d="M8 44 q6 4 10 0" stroke="#1b2836" stroke-width="2" fill="none"/></svg>`;
+MODES.fish={pad:false,
+ setup(){field.className='field f-deep';let h='';for(let i=0;i<9;i++)h+=`<i class="bub" style="left:${R(2,96)}%;animation-duration:${5+Math.random()*6}s;animation-delay:-${Math.random()*8}s"></i>`;
+  for(let i=0;i<5;i++)h+=`<svg class="weed sway" style="left:${i*22+2}%;width:34px;height:${60+R(0,50)}px;animation-delay:-${i}s" viewBox="0 0 34 100" preserveAspectRatio="none"><path d="M17 100 Q4 75 17 50 T17 0" stroke="${i%2?'#1f9e5a':'#2fcf7f'}" stroke-width="8" fill="none" stroke-linecap="round"/></svg>`;
+  field.innerHTML=h},
+ onQ(Q){field.querySelectorAll('.fish,.hook').forEach(e=>e.remove());const rows=shuffle([0,1,2,3]),gap=Math.max(60,(S.H-90)/3),cols=shuffle(FCOL.slice());
+  S.items=options(Q.a).map((v,k)=>{const el=document.createElement('button');el.className='fish';el.setAttribute('aria-label','תשובה '+fmt(v));
+   el.innerHTML=fishSVG(cols[k])+`<span class="${lblCls(v)}">${fmt(v)}</span>`;field.appendChild(el);const dir=Math.random()<.5?-1:1;
+   const it={el,v,x:R(0,Math.max(10,S.W-140)),y:8+rows[k]*gap,vx:dir*(22+Math.random()*20),ph:Math.random()*6,st:'swim'};el.onclick=()=>choose(it);return it})},
+ tick(dt){for(const it of S.items||[]){if(it.st==='gone')continue;
+  if(it.st==='swim'||it.st==='flee'){it.x+=it.vx*dt;if(it.x>S.W+10)it.x=-140;if(it.x<-150)it.x=S.W}
+  else if(it.st==='up'){it.y-=380*dt;if(it.hook)it.hook.style.height=Math.max(0,it.y+36)+'px';if(it.y<-100){it.st='gone';it.el.remove();it.hook&&it.hook.remove()}}
+  const y=it.y+(it.st==='swim'||it.st==='flee'?Math.sin(S.t*2+it.ph)*6:0);
+  it.el.style.transform=`translate(${it.x}px,${y}px) rotate(${it.st==='up'||it.st==='hooked'?-35:0}deg)`;it.el.firstElementChild.style.transform=it.vx>0?'scaleX(-1)':''}},
+ pick(it,ok){S.fx=it.x+66;S.fy=it.y+30;
+  if(ok){it.st='hooked';const hk=document.createElement('div');hk.className='hook';hk.style.left=(it.x+(it.vx>0?110:16))+'px';field.appendChild(hk);it.hook=hk;
+   requestAnimationFrame(()=>hk.style.height=(it.y+36)+'px');setTimeout(()=>{SND.splash();burst(it.x+66,it.y+30,['#fff','#bdf'],10,50);it.st='up'},380);
+   S.items.forEach(o=>{if(o!==it){o.st='flee';o.vx=Math.sign(o.vx)*260}})}
+  else{it.st='flee';it.vx=Math.sign(it.vx||1)*280;const c=S.items.find(o=>o.v===S.Q.a);c.el.classList.add('glow');c.vx*=.25}
+  after(ok,1200)}};
+
+/* --- mode: battle and boss --- */
+function waves(W,y,c,cls){let d=`M-120 ${y}`;for(let x=-120;x<W+120;x+=60)d+=' q15 -9 30 0 t30 0';return `<path class="wv ${cls}" d="${d} L${W+120} ${S.H+20} L-120 ${S.H+20}Z" fill="${c}"/>`}
+function shipSVG(sail,flag,enemy,p){return `<path d="M-60 -6 L60 -6 L46 24 L-46 24Z" fill="${enemy?'#4a3328':'#8a5a2b'}"/><path d="M-56 2 H56" stroke="#00000030" stroke-width="4"/>
+ ${[-30,-6,18].map(x=>`<circle cx="${x}" cy="8" r="4" fill="#1b1b1b"/>`).join('')}<rect x="-3" y="-96" width="6" height="92" fill="#5b3a1a"/>
+ <path d="M3 -90 Q52 -62 3 -26Z" fill="${sail}"/><path d="M-3 -84 Q-42 -60 -3 -34Z" fill="${sail}" opacity=".85"/><path d="M3 -96 l20 5 l-20 5z" fill="${flag}"/>
+ ${enemy?`<circle cx="18" cy="-58" r="8" fill="#fff"/><circle cx="15" cy="-59" r="2" fill="#1b1b1b"/><circle cx="21" cy="-59" r="2" fill="#1b1b1b"/>`:`<svg x="-58" y="-50" width="40" height="50" overflow="visible">${charSVG(p).replace('<svg class','<svg width="40" height="50" class')}</svg>`}`}
+const octoSVG=()=>`${[-50,-25,0,25,50].map((x,i)=>`<path class="tn" style="animation-delay:-${i*.3}s" d="M${x} -10 q${x>0?14:-14} 30 ${x>0?6:-6} 50" stroke="#7d3c98" stroke-width="16" fill="none" stroke-linecap="round"/>`).join('')}
+ <path class="tn" d="M-48 -40 q-40 -10 -36 -50 q4 -12 14 -4" stroke="#8e44ad" stroke-width="12" fill="none" stroke-linecap="round"/><path class="tn" style="animation-delay:-.8s" d="M48 -40 q40 -10 36 -50 q-4 -12 -14 -4" stroke="#8e44ad" stroke-width="12" fill="none" stroke-linecap="round"/>
+ <ellipse cx="0" cy="-58" rx="54" ry="62" fill="#8e44ad"/><ellipse cx="-18" cy="-92" rx="12" ry="8" fill="#a55fc4"/><circle cx="20" cy="-96" r="6" fill="#a55fc4"/>
+ <circle cx="-18" cy="-54" r="13" fill="#fff"/><circle cx="18" cy="-54" r="13" fill="#fff"/><circle cx="-16" cy="-52" r="6" fill="#1b1b1b"/><circle cx="16" cy="-52" r="6" fill="#1b1b1b"/>
+ <path d="M-32 -74 l22 10 M32 -74 l-22 10" stroke="#4a1f5c" stroke-width="5" stroke-linecap="round"/><path d="M-16 -26 q16 -10 32 0" stroke="#4a1f5c" stroke-width="4" fill="none" stroke-linecap="round"/>`;
+function battleDraw(){const W=S.W,H=S.H,y0=H*.68,s=Math.max(.45,Math.min(1,W/440,H/240)),boss=S.mode==='boss',p=cur();S.geo={y0,s,mx:W*.2,ex:W*.78};
+ field.innerHTML=`<div class="hp" id="hp"></div><svg class="scene" viewBox="0 0 ${W} ${H}">
+  <circle cx="${W*.5}" cy="${H*.2}" r="${22*s+8}" fill="#ffd34d"/><circle cx="${W*.5}" cy="${H*.2}" r="${34*s+12}" fill="#ffd34d" opacity=".25"/>
+  ${waves(W,y0-8,'#1386a8','b')}
+  <g transform="translate(${S.geo.mx} ${y0}) scale(${s})"><g id="me"><g class="rock">${shipSVG(p.color,'#ff6a48',0,p)}</g></g></g>
+  <g transform="translate(${S.geo.ex} ${y0}) scale(${-s} ${s})"><g id="en" class="${S.hp<=0?'sink':''}"><g class="rock">${boss?octoSVG():shipSVG('#2b2b2b','#1b1b1b',1)}</g></g></g>
+  ${waves(W,y0+12,'#12a2c4cc','')}<g id="fx"></g></svg>`;hpDraw()}
+function hpDraw(){$('hp')&&($('hp').innerHTML=(S.mode==='boss'?'תמנון':'ספינת אויב')+' '+[...Array(S.maxHp)].map((_,i)=>`<i class="${i<S.hp?'':'off'}"></i>`).join(''))}
+function shoot(fromX,toX,cb){const {y0,s}=S.geo,fx=$('fx');const b=document.createElementNS('http://www.w3.org/2000/svg','circle');b.setAttribute('r',7*s+3);b.setAttribute('fill','#1b1b1b');fx.appendChild(b);
+ SND.fire();puff(fromX,y0-20*s,'#ddd');tween(750,k=>{const x=fromX+(toX-fromX)*k,y=y0-20*s-Math.sin(Math.PI*k)*S.H*.38;b.setAttribute('cx',x);b.setAttribute('cy',y)},()=>{b.remove();boomAt(toX,y0-30*s);cb&&cb()})}
+function puff(x,y,c){const fx=$('fx');fx.insertAdjacentHTML('beforeend',`<circle class="ex" cx="${x}" cy="${y}" r="14" fill="${c}"/>`);setTimeout(()=>fx.firstElementChild&&fx.firstElementChild.remove(),700)}
+function boomAt(x,y){SND.boom();const fx=$('fx');const g=`<g class="bm"><circle class="ex" cx="${x}" cy="${y}" r="34" fill="#ff6a48"/><circle class="ex" cx="${x}" cy="${y}" r="22" fill="#ffc130" style="animation-delay:.05s"/><circle class="ex" cx="${x+10}" cy="${y-10}" r="18" fill="#888" style="animation-delay:.15s"/>
+ <text x="${x}" y="${y-40}" text-anchor="middle" font-family="Rubik" font-weight="900" font-size="28" fill="#fff" stroke="#c0392b" stroke-width="2" class="ex" style="animation-duration:1s">בום!</text></g>`;fx.insertAdjacentHTML('beforeend',g);setTimeout(()=>{const e=fx.querySelector('.bm');e&&e.remove()},1000)}
+const hitEl=id=>{const e=$(id);if(!e)return;e.classList.remove('hit');void e.getBoundingClientRect();e.classList.add('hit')};
+MODES.battle={pad:true,
+ setup(res){S.maxHp=S.mode==='boss'?8:6;if(!res||S.hp==null)S.hp=S.maxHp;battleDraw()},
+ resize(){battleDraw()},onQ(){},
+ typed(ok){const {mx,ex}=S.geo;S.fx=ok?ex:mx;S.fy=S.geo.y0-60;
+  if(ok)shoot(mx+40*S.geo.s,ex,()=>{S.hp--;hpDraw();saveRunAfter();hitEl('en');if(S.hp<=0){S.over=true;S.note=S.mode==='boss'?'ניצחתם את התמנון הענק!':'הטבעתם את ספינת האויב!';
+   setTimeout(()=>{$('en').classList.add('sink');SND.splash();combo(S.mode==='boss'?'ניצחון!':'טבעה!')},350);saveRunAfter();S.auto=setTimeout(advance,2200)}else S.auto=setTimeout(advance,700)});
+  else{setTimeout(()=>shoot(ex-40*S.geo.s,mx,()=>hitEl('me')),200);setTimeout(showSheet,1300)}},
+ end(done){if(S.hp>0){S.note=S.mode==='boss'?'התמנון ברח למעמקים... נסו שוב!':'ספינת האויב ברחה... נסו שוב!';$('en')&&$('en').classList.add('flee');setTimeout(done,1600)}else done()}};
+MODES.boss=MODES.battle;
+
+/* --- mode: dig --- */
+const DIG_ITEMS={chest:{n:'תיבת אוצר',c:30,d:`<rect x="8" y="26" width="44" height="26" rx="4" fill="#a8642c"/><path d="M8 28 Q30 4 52 28Z" fill="#c97b38"/><rect x="8" y="26" width="44" height="5" fill="#ffc130"/><rect x="26" y="28" width="8" height="12" rx="2" fill="#ffc130"/><circle cx="20" cy="22" r="3" fill="#fff6"/>`},
+ gem:{n:'יהלום',c:15,d:`<path d="M30 8 L50 24 L30 54 L10 24Z" fill="#4ee6ff"/><path d="M10 24 H50 M30 8 L22 24 L30 54 L38 24Z" stroke="#1e90ff" stroke-width="2" fill="none"/>`},
+ coin:{n:'מטבע',c:5,d:`<circle cx="30" cy="30" r="20" fill="#ffc130" stroke="#c48e00" stroke-width="4"/><path d="M30 18 l3.5 7.5 8 1 -6 5.5 1.6 8 -7.1 -4 -7.1 4 1.6 -8 -6 -5.5 8 -1z" fill="#c48e00"/>`},
+ crab:{n:'סרטן',c:0,d:`<ellipse cx="30" cy="36" rx="18" ry="12" fill="#ff4d4d"/><path d="M14 30 q-10 -8 -6 -16 q6 2 4 8 M46 30 q10 -8 6 -16 q-6 2 -4 8" stroke="#ff4d4d" stroke-width="5" fill="none" stroke-linecap="round"/><path d="M24 26 v-8 M36 26 v-8" stroke="#ff4d4d" stroke-width="3"/><circle cx="24" cy="17" r="3.5" fill="#fff"/><circle cx="36" cy="17" r="3.5" fill="#fff"/><circle cx="24" cy="17" r="1.6" fill="#000"/><circle cx="36" cy="17" r="1.6" fill="#000"/><path d="M14 42 l-6 6 M18 46 l-4 6 M46 42 l6 6 M42 46 l4 6" stroke="#ff4d4d" stroke-width="3"/>`}};
+MODES.dig={pad:true,
+ setup(res){if(!res||!S.tiles){S.tiles=shuffle(['chest','gem','gem','coin','coin','coin','crab','crab','coin']).map(t=>({t,open:false}));S.found=[]}this.draw()},
+ draw(){field.className='field f-sand';field.innerHTML=`<div class="dig" id="dig">${S.tiles.map((t,i)=>`<button class="tile ${t.open?'open':''}" data-i="${i}" aria-label="משבצת ${i+1}">${t.open?`<svg viewBox="0 0 60 60">${DIG_ITEMS[t.t].d}</svg>`:''}</button>`).join('')}</div><div class="digmsg" id="digmsg"></div>`;
+  $('dig').onclick=e=>{const b=e.target.closest('.tile');if(b)this.dig(+b.dataset.i)}},
+ resize(){},onQ(){$('digmsg').textContent='פתרו את התרגיל כדי לקבל חפירה'},
+ typed(ok){if(ok){S.awaitDig=true;$('digmsg').textContent='בחרו משבצת לחפור!';field.querySelectorAll('.tile:not(.open)').forEach(t=>t.classList.add('ready'));
+   if(!field.querySelector('.tile:not(.open)')){S.awaitDig=false;S.auto=setTimeout(advance,900)}}else setTimeout(showSheet,600)},
+ dig(i){const t=S.tiles[i];if(!S.awaitDig||t.open)return;S.awaitDig=false;t.open=true;S.found.push(t.t);SND.dig();
+  const b=field.querySelectorAll('.tile')[i],r=b.getBoundingClientRect(),f=field.getBoundingClientRect(),x=r.left-f.left+r.width/2,y=r.top-f.top+r.height/2;
+  burst(x,y,['#d79c42','#b8803a','#f2c46e'],14,60);field.querySelectorAll('.tile').forEach(e=>e.classList.remove('ready'));
+  b.classList.add('open');if(t.t==='crab')b.classList.add('crab');b.innerHTML=`<svg viewBox="0 0 60 60">${DIG_ITEMS[t.t].d}</svg>`;
+  const it=DIG_ITEMS[t.t];if(it.c){cur().coins+=it.c;S.gain+=it.c;setTimeout(()=>{floatText('+'+it.c,x,y);bumpCoins()},300)}
+  say(t.t==='chest'?'מצאתם את תיבת האוצר!!!':t.t==='crab'?'סרטן! הוא צובט רק בצחוק':'מצאתם '+it.n+'!');if(t.t==='chest'){combo('אוצר!');SND.win()}
+  saveRunAfter();S.auto=setTimeout(advance,t.t==='chest'?1500:1000)},
+ end(done){const f=S.found||[],c=k=>f.filter(x=>x===k).length;S.note=c('chest')?'מצאתם את תיבת האוצר!':'התיבה נשארה קבורה... אולי בפעם הבאה';
+  const parts=[c('gem')&&c('gem')+' יהלומים',c('coin')&&c('coin')+' מטבעות',c('crab')&&c('crab')+' סרטנים'].filter(Boolean);if(parts.length)S.note+=' (וגם '+parts.join(', ')+')';done()}};
+
+/* ---------- finish ---------- */
+function finish(){const p=cur(),ans=S.res.filter(x=>x!=null).length||1,ratio=S.correct/ans;
+ let stars=ratio>=.95?3:ratio>=.75?2:ratio>=.5?1:0;if((S.mode==='battle'||S.mode==='boss')&&S.hp>0)stars=Math.min(stars,1);
+ const st=p.stars[world],first=st[S.i]===0&&stars>0;st[S.i]=Math.max(st[S.i],stars);if(stars===3){p.coins+=20;S.gain+=20}
+ delete p.run;S.over=true;save();if(first&&S.i<NST-1){const pt=mapPts()[S.i];walkFrom=[pt[0]+(pt[0]>180?34:-34),pt[1]-12]}
+ $('doneCh').innerHTML=charSVG(p,stars?'happy':'sad');
+ $('bigstars').innerHTML=`<svg viewBox="0 0 300 110">${[0,1,2].map(j=>`<polygon class="${j<stars?'pop':''}" style="animation-delay:${j*.25}s;transform-box:fill-box;transform-origin:center" points="${starPts(60+j*90,j===1?50:62,j===1?46:36)}" fill="${j<stars?'#ffc130':'#d9d2c0'}" stroke="${j<stars?'#b47d00':'#bdb39b'}" stroke-width="3" stroke-linejoin="round"/>`).join('')}</svg>`;
+ $('dtitle').textContent=stars===3?'מושלם!':stars===2?'עבודה יפה!':stars===1?'עברתם את התחנה!':'כמעט! ננסה שוב?';
+ $('dnote').textContent=S.note||'';$('dscore').textContent=`${S.correct} תשובות נכונות מתוך ${ans} · הרווחתם ${S.gain} מטבעות${stars===3?' (כולל בונוס 20)':''}`;
+ $('nextBtn').style.display=stars>0&&S.i<NST-1?'':'none';$('againBtn').textContent=stars>0?'שוב את התחנה':'נסו שוב';
+ show('done');if(stars>0){SND.win();confetti()}}
+function confetti(){if(matchMedia('(prefers-reduced-motion: reduce)').matches)return;
+ for(let i=0;i<50;i++){const d=document.createElement('div');d.className='conf';d.style.left=R(0,100)+'vw';d.style.background=pick(COLORS.concat('#ffc130'));
+  d.style.animationDelay=(Math.random()*.6)+'s';d.style.animationDuration=(1.8+Math.random()*1.4)+'s';document.body.appendChild(d);setTimeout(()=>d.remove(),3800)}}
+$('nextBtn').onclick=()=>{walkFrom=null;startStation(S.i+1)};
+$('againBtn').onclick=()=>{walkFrom=null;startStation(S.i)};
+$('toMapBtn').onclick=openMap;
+
+renderHome();
+if(cur())openMap();
+}
+</script>
+<script>if('serviceWorker' in navigator&&location.protocol!=='file:')addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}));</script>
+</body>
+</html>
