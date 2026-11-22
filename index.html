@@ -337,6 +337,7 @@ textarea{font-size:13px;min-height:90px;direction:ltr}
 .rhud{position:absolute;top:8px;left:8px;right:8px;display:flex;justify-content:space-between;pointer-events:none;z-index:2}
 .rhud span{background:rgba(0,0,0,.42);color:#fff;border-radius:12px;padding:4px 10px;font-weight:800;font-size:16px}
 #shoot.g-race{background:#1b2836}#shoot.g-race .gfield{background:#1b2836}
+.ver{font-size:12px;opacity:.75;margin-top:6px;text-align:center}
 @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 @media(max-width:380px){.grades{grid-template-columns:repeat(4,minmax(0,1fr))}.hero h1{font-size:38px}.chip span{display:none}}
 @media(max-height:680px){.pad button{min-height:44px;font-size:21px}.comp{width:50px;height:58px}}
@@ -375,6 +376,7 @@ textarea{font-size:13px;min-height:90px;direction:ltr}
   </div>
   <div class="savebox">
     <div id="saveState">ההתקדמות נשמרת אוטומטית במכשיר הזה</div>
+    <div class="ver" id="verHome"></div>
     <button id="exportBtn">גיבוי ההתקדמות</button><button id="importBtn">שחזור מגיבוי</button>
   </div>
 </section>
@@ -521,6 +523,7 @@ textarea{font-size:13px;min-height:90px;direction:ltr}
 <section id="parent" class="screen">
   <div class="bar"><button class="ib" data-back="hub" aria-label="חזרה">→</button><b style="font-size:24px;flex:1">אזור הורים</b><button class="ib" id="pinChange" style="font-size:14px">החלפת קוד</button></div>
   <div class="kids" id="kids"></div>
+  <div id="delBox" style="margin:-4px 0 12px"><button class="linkb" id="delKid"></button></div>
   <div class="psec">
     <h3 id="mTitle"></h3>
     <div class="pform">
@@ -536,6 +539,7 @@ textarea{font-size:13px;min-height:90px;direction:ltr}
   </div>
   <div class="psec"><h3>התקדמות <small id="repTime"></small></h3><div id="rep"></div></div>
   <div class="psec"><h3>טעויות אחרונות</h3><div id="mistakes"></div></div>
+  <p class="ver" id="verParent" style="color:var(--muted)"></p>
 </section>
 
 <div class="sheet" id="sheet"><h3 id="shT"></h3><p id="shA"></p><p id="shE"></p><button class="big alt" id="shBtn">המשך</button></div>
@@ -1069,9 +1073,9 @@ $('hubShop').onclick=()=>{SND.tap();openShop()};
 $('hubParent').onclick=()=>{SND.tap();openPin()};
 
 /* ---- training picker ---- */
-let tTab='mul',tSel=[];
+let tTab='mul',tSel=[],tFor=null;
 const TABS=[['mul','כפל'],['add','חיבור'],['sub','חיסור'],['div','חילוק'],['mine','שלי']];
-function openTrain(){const p=cur();if(!tSel.length&&p.mission)tSel=[p.mission.k];if(!tSel.length)tSel=[PRESETS.mul[1].k];renderTrain();show('train')}
+function openTrain(){const p=cur();if(tFor!==p.id){tSel=[];tTab='mul';tFor=p.id}if(!tSel.length&&p.mission)tSel=[p.mission.k];if(!tSel.length)tSel=[PRESETS.mul[1].k];renderTrain();show('train')}
 function renderTrain(){const p=cur();renderGPick();
  $('ttabs').innerHTML=TABS.map(([id,n])=>`<button data-t="${id}" class="${tTab===id?'sel':''}">${n}</button>`).join('');
  const list=tTab==='mine'?p.custom.map(topicOf):PRESETS[tTab];
@@ -1172,8 +1176,8 @@ function gFinish(){const p=cur(),c=G.correct;const grade=c===10&&G.speedB>=300?'
  const bk=G.keys.slice().sort().join('|'),prev=p.best[bk]||0,isBest=G.score>prev;if(isBest)p.best[bk]=G.score;
  if(['S','A','B'].includes(grade))G.keys.forEach(k=>{const g=p.grades[k]=p.grades[k]||{};g[grade]=(g[grade]||0)+1});
  const xp=Math.round(G.score/10),coins=c*5+(grade==='S'||grade==='A'?20:0);const up=addXP(p,xp);p.coins+=coins;p.roundsPlayed++;
- let mLine='';const m=p.mission;if(G.mission&&m&&G.keys.length===1&&G.keys[0]===m.k&&c>=5){m.done++;if(m.done>=m.rounds&&!m.rewarded){m.rewarded=true;p.coins+=m.reward;mLine=`<p class="sc"><b>המשימה הושלמה!</b> קיבלת ${m.reward} מטבעות בונוס</p>`}else if(m.done<m.rounds)mLine=`<p class="sc">משימה: ${m.done} מתוך ${m.rounds} סבבים</p>`}
- else if(G.mission&&c<5)mLine='<p class="sc">כדי שהסבב ייחשב למשימה צריך לפחות 5 תשובות נכונות</p>';
+ let mLine='';const m=p.mission;const isM=m&&G.keys.length===1&&G.keys[0]===m.k;if(isM&&c>=5){m.done++;if(m.done>=m.rounds&&!m.rewarded){m.rewarded=true;p.coins+=m.reward;mLine=`<p class="sc"><b>המשימה הושלמה!</b> קיבלת ${m.reward} מטבעות בונוס</p>`}else if(m.done<m.rounds)mLine=`<p class="sc">משימה: ${m.done} מתוך ${m.rounds} סבבים</p>`}
+ else if(isM&&c<5)mLine='<p class="sc">כדי שהסבב ייחשב למשימה צריך לפחות 5 תשובות נכונות</p>';
  G.note='';if(G.game==='race'){const pl=racePlace(),rb=pl===1?30:pl===2?15:0;p.coins+=rb;G.note=(pl===1?'ניצחת במרוץ! מקום ראשון':'סיימת את המרוץ במקום '+pl)+(rb?' · +'+rb+' מטבעות':'')}
  save();const v=lvl(p.xp),gc={S:'#7a5cff',A:'#ffc130',B:'#c5ced6',C:'#d9a06a',D:'#b8c4cc'}[grade];
  const md=G.keys.length===1?medalOf(p,G.keys[0]):'';
@@ -1221,7 +1225,7 @@ let pKid=null;
 function openParent(){pKid=DB.cur||(DB.players[0]&&DB.players[0].id);renderParent();show('parent')}
 function renderParent(){const p=DB.players.find(x=>x.id===pKid);if(!p){$('kids').innerHTML='<p class="muted">עוד אין שחקנים.</p>';return}
  $('kids').innerHTML=DB.players.map(q=>`<button data-id="${q.id}" class="${q.id===pKid?'sel':''}">${esc(q.name)} · ${GL[q.grade-1]}׳</button>`).join('');
- $('mTitle').textContent='המשימה של '+p.name;
+ $('mTitle').textContent='המשימה של '+p.name;$('delKid').textContent='מחיקת השחקן '+p.name;delete $('delKid').dataset.sure;
  const opts=Object.entries(PRESETS).map(([op,ts])=>`<optgroup label="${OPN[op]}">${ts.map(t=>`<option value="${t.k}">${t.label}</option>`).join('')}</optgroup>`).join('')+
   (p.custom.length?`<optgroup label="שבנו בעצמם">${p.custom.map(k=>`<option value="${k}">${esc(topicOf(k).label)}</option>`).join('')}</optgroup>`:'');
  $('mTopic').innerHTML=opts;const m=p.mission;if(m){$('mTopic').value=m.k;$('mRounds').value=m.rounds;$('mReward').value=m.reward}
@@ -1236,6 +1240,10 @@ function renderParent(){const p=DB.players.find(x=>x.id===pKid);if(!p){$('kids')
  $('mistakes').innerHTML=p.mistakes.length?p.mistakes.slice(0,10).map(x=>`<div class="mis"><b class="m">${esc(x.raw)}</b><span class="w">ענה ${fmt(x.w)}</span><span class="r">נכון: ${fmt(x.a)}</span></div>`).join('')+
   (rep.length?`<p class="muted">טעויות שחוזרות: ${rep.slice(0,4).map(r=>'<span class="m">'+esc(r)+'</span>').join(', ')}. המשחק ישאל אותן יותר בסבבים הבאים.</p>`:'')
   :'<p class="muted">אין טעויות עדיין.</p>'}
+$('delKid').onclick=()=>{const p=DB.players.find(x=>x.id===pKid);if(!p)return;const b=$('delKid');
+ if(b.dataset.sure!==pKid){b.dataset.sure=pKid;b.textContent='בטוחים? כל ההתקדמות של '+p.name+' תימחק. לחצו שוב למחיקה';return}
+ DB.players=DB.players.filter(x=>x.id!==pKid);if(DB.cur===pKid)DB.cur=DB.players[0]?DB.players[0].id:null;save();toast('השחקן נמחק');pKid=DB.cur;
+ if(!DB.players.length){renderHome();show('home')}else renderParent()};
 $('kids').onclick=e=>{const b=e.target.closest('button');if(!b)return;pKid=b.dataset.id;renderParent()};
 $('mSave').onclick=()=>{const p=DB.players.find(x=>x.id===pKid);const k=$('mTopic').value,r=Math.max(1,Math.min(50,Math.floor(+$('mRounds').value)||5)),w=Math.max(0,Math.min(1000,Math.floor(+$('mReward').value)||0));
  const same=p.mission&&p.mission.k===k;p.mission={k,rounds:r,reward:w,done:same?p.mission.done:0,rewarded:same&&p.mission.rewarded&&p.mission.done>=r};save();SND.coin();toast('המשימה נשמרה');renderParent()};
@@ -1352,6 +1360,7 @@ function raceDraw(){const c=$('rc');if(!c)return;const x=c.getContext('2d'),W=G.
 const LANEC3=['#ff6a48','#7a5cff','#1e90ff'];
 const GAMES={space:{name:'חללית',setup:spaceSetup,q:spaceQ,tick:spaceTick,shot:spaceShot},range:{name:'מטווח',setup:rangeSetup,q:rangeQ,tick:rangeTick,shot:rangeShot},race:{name:'מרוץ',setup:raceSetup,q:raceQ,tick:raceTick}};
 
+const APP_VERSION='1.6.0';$('verHome').textContent='גרסה '+APP_VERSION;$('verParent').textContent='אי המספרים · גרסה '+APP_VERSION;
 renderHome();
 if(cur())openHub();
 }
