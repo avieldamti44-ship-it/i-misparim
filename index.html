@@ -215,6 +215,108 @@ textarea{font-size:13px;min-height:90px;direction:ltr}
 @keyframes fall{to{transform:translateY(110vh) rotate(720deg)}}
 .toast{position:fixed;top:12px;left:50%;transform:translate(-50%,-150%);background:#1b2836;color:#fff;padding:10px 16px;border-radius:999px;font-weight:700;z-index:40;transition:transform .3s;font-size:15px;max-width:92vw}
 .toast.on{transform:translate(-50%,0)}
+/* ===== update: hub, training, shooters, parent ===== */
+.pcard{display:flex;gap:14px;align-items:center}
+.pcard>svg{width:76px;height:90px;flex:none}
+.pcard .info{flex:1;display:flex;flex-direction:column;gap:6px}
+.pcard .nm{display:flex;align-items:baseline;gap:8px}.pcard .nm b{font-size:24px}.pcard .nm span{color:var(--muted);font-size:15px}
+.lvl{display:flex;align-items:center;gap:8px;font-weight:700;font-size:15px}
+.lvl em{font-style:normal;background:#7a5cff;color:#fff;border-radius:10px;padding:2px 10px;font-weight:800}
+.xpbar{height:12px;background:var(--line);border-radius:6px;overflow:hidden}.xpbar i{display:block;height:100%;background:#7a5cff;border-radius:6px;transition:width .8s}
+.xpnote{color:var(--muted);font-size:13px}
+.mission{background:var(--gold);color:#4a3200;border-radius:24px;padding:16px;margin-top:14px;display:flex;flex-direction:column;gap:8px;box-shadow:0 6px 0 #c48e00}
+.mission small{font-weight:800;font-size:15px}.mission b.t{font-size:26px;line-height:1.1}
+.mission .row{display:flex;align-items:center;gap:10px}.mission .bar3{flex:1;height:12px;background:rgba(255,255,255,.55);border-radius:6px;overflow:hidden}.mission .bar3 i{display:block;height:100%;background:var(--leaf)}
+.mission button{background:#4a3200;color:var(--gold);font-weight:800;font-size:17px}
+.modes{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-top:14px}
+.mode{display:flex;flex-direction:column;align-items:flex-start;gap:8px;text-align:start;padding:16px 14px;border-radius:24px;min-height:180px}
+.mode svg{width:50px;height:50px}.mode b{font-size:22px;line-height:1.1}.mode span{font-size:14px}
+.m-train{background:var(--coral);color:#fff;box-shadow:0 6px 0 var(--coral2)}
+.m-free{background:var(--card);color:var(--ink);box-shadow:0 6px 0 rgba(0,0,0,.15)}.m-free span{color:var(--muted)}
+.m-free.locked{opacity:.55}
+.hubbtns{display:flex;gap:10px;margin-top:16px}.hubbtns button{flex:1;background:rgba(255,255,255,.2);color:#fff;font-weight:700}
+.hubbtns button+button{background:rgba(0,0,0,.2)}
+/* training */
+.ttabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}
+.ttabs button{min-height:42px;border-radius:999px;padding:0 16px;font-weight:800;background:rgba(255,255,255,.2);color:#fff}
+.ttabs button.sel{background:var(--gold);color:#4a3200}
+.chips{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.chip2{display:flex;flex-direction:column;align-items:center;gap:3px;padding:10px 4px;border-radius:16px;background:light-dark(#fff,#0f2638);border:3px solid var(--line);min-height:96px}
+.chip2 small{font-size:13px;font-weight:600}.chip2 b{font-size:26px;line-height:1.05;font-weight:900}.chip2 b.w{font-size:17px;text-align:center}
+.chip2.sel{background:var(--coral);border-color:var(--coral2);color:#fff}
+.medal{font-size:12px;font-weight:800;border-radius:999px;padding:1px 8px;background:#eef2f5;color:#5d6d7c}
+.medal.gold{background:#ffc130;color:#4a3200}.medal.silver{background:#c5ced6;color:#1b2836}.medal.bronze{background:#d9a06a;color:#3b2207}
+.legend{display:flex;gap:12px;font-size:13px;color:var(--muted);flex-wrap:wrap;margin-top:10px}
+.adv{margin-top:12px;border:2px solid var(--line);border-radius:16px;padding:10px 12px}
+.adv summary{font-weight:700;cursor:pointer;min-height:32px}
+.fgrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:8px}
+.fgrid label{margin:0;font-size:14px;display:flex;flex-direction:column;gap:4px}
+.fgrid input,.fgrid select,.pform input,.pform select{min-height:44px;border-radius:12px;border:2px solid var(--line);background:light-dark(#fff,#0f2638);font-size:16px;padding:0 10px;width:100%}
+.sticky-go{position:sticky;bottom:10px;margin-top:14px}
+/* shooter */
+#shoot.on{display:flex;flex-direction:column;height:100dvh;padding:10px}
+#shoot.g-space{background:radial-gradient(circle at 70% 15%,#3a2a7a 0,#1a1446 45%,#0b0a24 100%)}
+#shoot.g-range{background:#2b1a3f}
+.sbar{display:flex;align-items:center;gap:8px;color:#fff;margin-bottom:8px}
+.gscore{text-align:left;line-height:1;min-width:64px}.gscore small{display:block;font-size:12px;opacity:.8}.gscore b{font-size:22px;color:var(--gold)}
+.gq{position:relative;background:rgba(255,255,255,.95);color:#1b2836;border-radius:20px;padding:8px 12px;display:flex;flex-direction:column;align-items:center;gap:2px;z-index:3}
+.gq .gtopic{font-size:13px;font-weight:700;color:#5d6d7c;background:#eef2f5;border-radius:999px;padding:1px 10px}
+.gq b{font-size:clamp(28px,8vw,36px);font-weight:900}
+.gq .hintb{top:8px}
+.ghint{font-size:15px;font-weight:600;color:#7a4f00;background:#fff4cc;border-radius:12px;padding:6px 10px;margin-top:4px;display:none}
+.ghint.on{display:block}
+.gfield{position:relative;flex:1;margin-top:8px;border-radius:22px;overflow:hidden;touch-action:manipulation}
+.g-space .gfield{background:radial-gradient(1.5px 1.5px at 10% 20%,#fff,transparent),radial-gradient(1px 1px at 30% 60%,#fff,transparent),radial-gradient(1.4px 1.4px at 80% 30%,#fff,transparent),radial-gradient(1px 1px at 60% 80%,#fff,transparent),radial-gradient(1.2px 1.2px at 90% 70%,#fff,transparent),radial-gradient(1px 1px at 45% 15%,#fff,transparent);background-size:180px 180px}
+.g-range .gfield{background:linear-gradient(#e0245e 0 46px,transparent 46px),repeating-linear-gradient(90deg,#ffc130 0 22px,transparent 22px 98px) 0 0/100% 46px no-repeat,linear-gradient(transparent 0 calc(var(--r1) - 6px),#8a5a2b calc(var(--r1) - 6px) var(--r1),transparent var(--r1) calc(var(--r2) - 6px),#8a5a2b calc(var(--r2) - 6px) var(--r2),transparent var(--r2) calc(100% - 70px),#a8642c calc(100% - 70px)),#3d2659}
+.rock,.tgt{position:absolute;left:0;top:0;background:none;padding:0;min-height:0;border-radius:50%;will-change:transform}
+.rock{width:86px;height:86px}.rock svg{width:100%;height:100%;display:block;pointer-events:none}
+.rock span,.tgt span{position:absolute;inset:0;display:grid;place-items:center;font-weight:900;color:#fff;text-shadow:0 2px 0 rgba(0,0,0,.45);direction:ltr;pointer-events:none;font-size:26px}
+.tgt{width:84px;height:130px;border-radius:0}.tgt svg{width:100%;height:100%;display:block;pointer-events:none}
+.tgt span{inset:0 0 auto 0;height:84px;color:#1b2836;text-shadow:none}
+.tgt.down{transition:transform .35s ease-in;transform-origin:50% 100%}
+.rock.bad,.tgt.bad{filter:drop-shadow(0 0 10px #ff3b3b)}
+.ship{position:absolute;bottom:6px;left:0;width:96px;height:112px;transition:transform .22s ease-out;pointer-events:none;z-index:2}
+.laser{position:absolute;width:6px;margin-left:-3px;background:linear-gradient(#4ee6ff,#d6fbff);border-radius:3px;box-shadow:0 0 14px #4ee6ff;animation:laser .35s ease-out forwards;z-index:1;pointer-events:none}
+@keyframes laser{0%{opacity:1}100%{opacity:0}}
+.cross{position:absolute;left:0;top:0;width:96px;height:96px;transition:transform .22s ease-out;pointer-events:none;z-index:4}
+.bang{position:absolute;font-weight:900;color:#fff;font-size:24px;text-shadow:0 2px 0 #c0392b;animation:flt .7s ease-out forwards;pointer-events:none;z-index:5}
+.ammo{position:absolute;bottom:14px;left:0;right:0;text-align:center;color:#fff;font-size:14px;opacity:.85;pointer-events:none}
+/* round result */
+.grade{position:relative;width:150px;height:150px;margin:4px auto;display:grid;place-items:center}
+.grade svg{position:absolute;inset:0}.grade b{position:relative;font-size:84px;line-height:1;font-weight:900;color:#4a3200}
+.grade.pop{animation:pop .6s}
+.gtotal{font-size:44px;font-weight:900;line-height:1}
+.newbest{display:inline-block;background:var(--coral);color:#fff;font-weight:900;border-radius:999px;padding:4px 14px;margin-top:6px}
+.brk{background:light-dark(#fff,#0f2638);border-radius:18px;padding:12px 14px;margin-top:12px;display:flex;flex-direction:column;gap:6px;text-align:start}
+.brk div{display:flex;justify-content:space-between;gap:10px}.brk hr{border:0;height:2px;background:var(--line);margin:2px 0;width:100%}
+.xpbox{background:light-dark(#f3efff,#241d4a);border-radius:18px;padding:12px 14px;margin-top:12px;text-align:start;display:flex;flex-direction:column;gap:8px}
+.xpbox .top{display:flex;justify-content:space-between;align-items:baseline;gap:8px}
+.upbadge{background:#7a5cff;color:#fff;border-radius:10px;padding:2px 10px;font-weight:800}
+.gscale{color:var(--muted);font-size:13px;margin-top:10px}
+/* pin + parent */
+.pinbox{text-align:center}
+.dots{display:flex;justify-content:center;gap:14px;margin:16px 0}.dots i{width:20px;height:20px;border-radius:50%;border:3px solid var(--ink);display:inline-block}.dots i.on{background:var(--ink)}
+.pinpad{direction:ltr;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;max-width:300px;margin:0 auto}
+.pinpad button{background:light-dark(#fff,#0f2638);border:2px solid var(--line);font-size:26px;font-weight:800;min-height:60px}
+.linkb{background:none;color:var(--coral2);text-decoration:underline;font-weight:700;min-height:44px}
+#parent{background:light-dark(#eef4f7,#0b2233)}
+#parent .bar{color:var(--ink)}#parent .ib{background:light-dark(#fff,#132f45);color:var(--ink)}
+.kids{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}
+.kids button{min-height:42px;border-radius:999px;padding:0 16px;font-weight:700;background:light-dark(#fff,#132f45);color:var(--muted)}
+.kids button.sel{background:var(--ink);color:var(--card)}
+.psec{background:var(--card);border-radius:20px;padding:16px;margin-bottom:14px}
+.psec h3{margin:0 0 10px;font-size:19px;display:flex;justify-content:space-between;align-items:baseline;gap:8px}.psec h3 small{font-size:13px;color:var(--muted);font-weight:400}
+.pform{display:flex;flex-direction:column;gap:10px}.pform label{margin:0;font-size:14px;display:flex;flex-direction:column;gap:4px}
+.pform .chk{flex-direction:row;align-items:center;gap:10px;font-size:16px;font-weight:600}.pform .chk input{width:24px;height:24px;min-height:0}
+.pbtns{display:flex;gap:8px}.pbtns button{flex:1;font-weight:800}
+.save{background:var(--leaf);color:#fff}.clear{background:light-dark(#eef4f7,#0f2638);color:var(--ink)}
+.rep{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr) 46px;align-items:center;gap:8px;font-size:15px;margin:6px 0}
+.rep .b{height:14px;background:light-dark(#eef4f7,#0f2638);border-radius:7px;overflow:hidden}.rep .b i{display:block;height:100%;border-radius:7px}
+.rep b{text-align:left}
+.mis{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--line);font-size:16px}
+.mis b{flex:1;text-align:right}.mis .w{color:#c0392b}.mis .r{color:#168a4f;font-weight:700}
+.muted{color:var(--muted);font-size:14px}
+
 @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 @media(max-width:380px){.grades{grid-template-columns:repeat(4,minmax(0,1fr))}.hero h1{font-size:38px}.chip span{display:none}}
 @media(max-height:680px){.pad button{min-height:44px;font-size:21px}.comp{width:50px;height:58px}}
@@ -270,7 +372,7 @@ textarea{font-size:13px;min-height:90px;direction:ltr}
 
 <section id="map" class="screen">
   <div class="bar">
-    <button class="ib" id="homeBtn" aria-label="החלפת שחקן">→</button>
+    <button class="ib" id="homeBtn" aria-label="חזרה">→</button>
     <div class="chip" id="pchip"></div>
     <select id="gradeSel" aria-label="כיתה"></select>
     <span class="coins" id="coins"></span>
@@ -286,7 +388,7 @@ textarea{font-size:13px;min-height:90px;direction:ltr}
 </section>
 
 <section id="shop" class="screen">
-  <div class="bar"><button class="ib" data-back="map" aria-label="חזרה">→</button><b style="font-size:22px">חנות הפרסים</b><span class="coins" id="shopCoins"></span></div>
+  <div class="bar"><button class="ib" data-back="hub" aria-label="חזרה">→</button><b style="font-size:22px">חנות הפרסים</b><span class="coins" id="shopCoins"></span></div>
   <div class="panel preview"><div id="shopPrev"></div><p style="margin:0;color:var(--muted)">קונים פריטים במטבעות ומלבישים את הדמות. פריט אחד מכל סוג.</p></div>
   <div class="shopgrid" id="shopGrid"></div>
 </section>
@@ -321,6 +423,97 @@ textarea{font-size:13px;min-height:90px;direction:ltr}
     <button class="big" id="againBtn">שוב את התחנה</button>
     <button class="big ghost" id="toMapBtn">חזרה למפה</button>
   </div>
+</section>
+
+
+<section id="hub" class="screen">
+  <div class="bar">
+    <button class="ib" id="hubBack" aria-label="החלפת שחקן">→</button>
+    <span style="flex:1"></span>
+    <span class="coins" id="hubCoins"></span>
+  </div>
+  <div class="panel pcard" id="hubCard"></div>
+  <div id="hubMission"></div>
+  <div class="modes">
+    <button class="mode m-train" id="goTrain">
+      <svg viewBox="0 0 52 52" aria-hidden="true"><circle cx="26" cy="26" r="22" fill="none" stroke="#fff" stroke-width="4"/><circle cx="26" cy="26" r="13" fill="none" stroke="#fff" stroke-width="4"/><circle cx="26" cy="26" r="5" fill="#fff"/></svg>
+      <b>אימון ממוקד</b><span>בוחרים נושא ומתרגלים במשחקי ירי, עם ציון ושיא</span>
+    </button>
+    <button class="mode m-free" id="goFree">
+      <svg viewBox="0 0 52 52" aria-hidden="true"><ellipse cx="26" cy="40" rx="22" ry="8" fill="#f2c46e"/><ellipse cx="26" cy="37" rx="20" ry="7" fill="#ffe0a0"/><path d="M22 37 q-2 -14 4 -24" stroke="#8a5a2b" stroke-width="3" fill="none"/><path d="M26 13 q-10 -6 -18 2 q9 -3 18 0z M26 13 q8 -9 18 -4 q-9 0 -18 6z" fill="#22b569"/></svg>
+      <b>מסע חופשי</b><span id="freeNote">המפה והאיים</span>
+    </button>
+  </div>
+  <div class="hubbtns">
+    <button id="hubShop">חנות הפרסים</button>
+    <button id="hubParent">אזור הורים</button>
+  </div>
+</section>
+
+<section id="train" class="screen">
+  <div class="bar"><button class="ib" data-back="hub" aria-label="חזרה">→</button><b style="font-size:24px">מה מתרגלים?</b></div>
+  <div class="ttabs" id="ttabs"></div>
+  <div class="panel">
+    <div style="display:flex;justify-content:space-between;align-items:baseline;gap:8px;margin-bottom:10px"><b style="font-size:18px" id="tTitle"></b><span class="muted">אפשר לסמן כמה</span></div>
+    <div class="chips" id="chips"></div>
+    <div class="legend"><span><span class="medal bronze">ארד</span> ציון B</span><span><span class="medal silver">כסף</span> ציון A</span><span><span class="medal gold">זהב</span> פעמיים A = שליטה</span></div>
+    <details class="adv" id="adv">
+      <summary>מתקדם: לבנות תרגול בעצמי</summary>
+      <div class="fgrid">
+        <label>פעולה<select id="aOp"><option value="mul">כפל</option><option value="add">חיבור</option><option value="sub">חיסור</option><option value="div">חילוק</option></select></label>
+        <label>מספר קבוע (לא חובה)<input id="aFix" type="number" inputmode="numeric" min="0" max="1000" placeholder="למשל 3"></label>
+        <label>מספר שני, מ-<input id="aFrom" type="number" inputmode="numeric" value="1" min="0" max="10000"></label>
+        <label>עד<input id="aTo" type="number" inputmode="numeric" value="10" min="0" max="10000"></label>
+      </div>
+      <p class="err" id="aErr"></p>
+      <button class="big ghost" id="aAdd" style="margin-top:4px">הוספה לרשימה</button>
+    </details>
+  </div>
+  <div class="sticky-go"><button class="big alt" id="tGo">יוצאים לסבב! (10 תרגילים)</button></div>
+</section>
+
+<section id="shoot" class="screen">
+  <div class="sbar">
+    <button class="ib" id="gQuit" aria-label="יציאה">✕</button>
+    <div class="prog" id="gProg"></div>
+    <div class="gscore"><small>ניקוד</small><b id="gScore">0</b></div>
+  </div>
+  <div class="gq">
+    <span class="gtopic" id="gTopic"></span>
+    <b class="m" id="gQ"></b>
+    <button class="hintb" id="gHint">רמז</button>
+    <div class="ghint" id="gHintT"></div>
+  </div>
+  <div class="gfield" id="gField"></div>
+</section>
+
+<section id="gdone" class="screen">
+  <div class="panel done" id="gdBody"></div>
+</section>
+
+<section id="pin" class="screen">
+  <div class="bar"><button class="ib" data-back="hub" aria-label="חזרה">→</button><b style="font-size:22px">אזור הורים</b></div>
+  <div class="panel pinbox" id="pinBody"></div>
+</section>
+
+<section id="parent" class="screen">
+  <div class="bar"><button class="ib" data-back="hub" aria-label="חזרה">→</button><b style="font-size:24px;flex:1">אזור הורים</b><button class="ib" id="pinChange" style="font-size:14px">החלפת קוד</button></div>
+  <div class="kids" id="kids"></div>
+  <div class="psec">
+    <h3 id="mTitle"></h3>
+    <div class="pform">
+      <label>נושא המשימה<select id="mTopic"></select></label>
+      <div class="fgrid" style="margin:0">
+        <label>כמה סבבים<input id="mRounds" type="number" inputmode="numeric" min="1" max="50" value="5"></label>
+        <label>פרס בסיום (מטבעות)<input id="mReward" type="number" inputmode="numeric" min="0" max="1000" value="50"></label>
+      </div>
+      <p class="muted" id="mState" style="margin:0"></p>
+      <div class="pbtns"><button class="save" id="mSave">שמירת משימה</button><button class="clear" id="mClear">ביטול משימה</button></div>
+      <label class="chk"><input type="checkbox" id="allowFree">מותר לשחק גם במסע החופשי</label>
+    </div>
+  </div>
+  <div class="psec"><h3>התקדמות <small id="repTime"></small></h3><div id="rep"></div></div>
+  <div class="psec"><h3>טעויות אחרונות</h3><div id="mistakes"></div></div>
 </section>
 
 <div class="sheet" id="sheet"><h3 id="shT"></h3><p id="shA"></p><p id="shE"></p><button class="big alt" id="shBtn">המשך</button></div>
@@ -540,9 +733,9 @@ $('chars').onclick=e=>{const b=e.target.closest('button');if(!b)return;newChar=b
 $('addBtn').onclick=()=>{const n=$('nm').value.trim();
  if(!n){$('err').textContent='כתבו שם קודם';return}
  if(!newGrade){$('err').textContent='בחרו כיתה';return}
- $('err').textContent='';const p=newPlayer(n,newGrade,newChar);DB.players.push(p);DB.cur=p.id;$('nm').value='';newGrade=0;save();SND.win();openMap()};
-$('plist').onclick=e=>{const b=e.target.closest('.prof');if(!b)return;DB.cur=b.dataset.id;save();SND.tap();openMap()};
-document.querySelectorAll('[data-back]').forEach(b=>b.onclick=()=>b.dataset.back==='map'?openMap():(renderHome(),show('home')));
+ $('err').textContent='';const p=newPlayer(n,newGrade,newChar);DB.players.push(p);DB.cur=p.id;$('nm').value='';newGrade=0;fixPlayers2();save();SND.win();openHub()};
+$('plist').onclick=e=>{const b=e.target.closest('.prof');if(!b)return;DB.cur=b.dataset.id;save();SND.tap();openHub()};
+document.querySelectorAll('[data-back]').forEach(b=>b.onclick=()=>{const d=b.dataset.back;if(d==='map')openMap();else if(d==='hub')openHub();else{renderHome();show('home')}});
 
 /* backup */
 let bkMode='out';
@@ -557,7 +750,7 @@ $('bkBtn').onclick=async()=>{if(bkMode==='out'){try{await navigator.clipboard.wr
 
 /* ---------- map ---------- */
 let world='basic',walkFrom=null;
-function show(id){if(id!=='play')$('sheet').classList.remove('on');document.querySelectorAll('.screen').forEach(s=>s.classList.toggle('on',s.id===id));window.scrollTo(0,0)}
+function show(id){if(id!=='play'&&id!=='shoot')$('sheet').classList.remove('on');document.querySelectorAll('.screen').forEach(s=>s.classList.toggle('on',s.id===id));window.scrollTo(0,0)}
 const coinHTML=n=>`<i></i>${n}`;
 function openMap(){const p=cur();if(!p){renderHome();return show('home')}
  if(p.lastWorld)world=p.lastWorld;
@@ -602,7 +795,7 @@ function drawMap(){const p=cur(),st=p.stars[world],H=NST*104+60;const svg=$('map
 $('mapsvg').onclick=e=>{const g=e.target.closest('.st');if(!g)return;if(g.classList.contains('lock')){SND.bad();toast('קודם צריך לעבור את התחנה הקודמת');return}startStation(+g.dataset.i)};
 $('tabs').onclick=e=>{const b=e.target.closest('button');if(!b)return;const w=WORLDS.find(x=>x.id===b.dataset.w);
  if(cur().grade<w.from){SND.bad();toast('האי הזה נפתח מכיתה '+GL[w.from-1]+'׳');return}world=w.id;cur().lastWorld=world;save();SND.tap();openMap()};
-$('homeBtn').onclick=()=>{renderHome();show('home')};
+$('homeBtn').onclick=()=>openHub();
 $('gradeSel').onchange=e=>{cur().grade=+e.target.value;save();openMap()};
 $('muteBtn').onclick=()=>{DB.mute=!DB.mute;save();$('muteBtn').textContent=DB.mute?'צליל: כבוי':'צליל: פועל';SND.tap()};
 $('resumeBox').onclick=e=>{if(!e.target.closest('#resumeBtn'))return;const r=cur().run;world=r.world;startStation(r.i,r)};
@@ -652,7 +845,7 @@ function typed(){if(S.val===''||S.val==='-'||S.val==='.')return;const ok=Math.ab
  $('ans').className='ans '+(ok?'ok':'no');$('pad').classList.add('off');MODES[S.mode].typed(ok);graded(ok)}
 function choose(it){if(S.locked)return;S.locked=true;const ok=it.v===S.Q.a;MODES[S.mode].pick(it,ok);graded(ok)}
 function graded(ok){const p=cur();S.res[S.qi]=ok?1:0;
- if(ok){S.correct++;S.streak++;const c=(S.hint?5:10)+(S.streak>=3?5:0);S.gain+=c;p.coins+=c;p.skill[world]=Math.min(4,p.skill[world]+.3);
+ if(ok){S.correct++;S.streak++;const c=(S.hint?5:10)+(S.streak>=3?5:0);S.gain+=c;p.coins+=c;{const up=addXP(p,10);if(up)setTimeout(()=>toast('עלית לרמה '+up+'!'),400)}p.skill[world]=Math.min(4,p.skill[world]+.3);
   SND.good();react('happy');say(pick(['כל הכבוד!','מעולה!','אלוף!','בול!','וואו!','יפה מאוד!','איזה גאון!']));
   floatText('+'+c,S.fx??S.W/2,S.fy??S.H/2);bumpCoins();if(S.streak>=3)combo('רצף '+S.streak+'!')}
  else{S.streak=0;p.skill[world]=Math.max(0,p.skill[world]-.45);SND.bad();react('sad');say(pick(['לא נורא, ממשיכים!','כמעט!','טעויות עוזרות ללמוד!']));$('banner').classList.add('shake');setTimeout(()=>$('banner').classList.remove('shake'),400)}
@@ -660,7 +853,7 @@ function graded(ok){const p=cur();S.res[S.qi]=ok?1:0;
 function saveRunAfter(){const p=cur();p.run={world,i:S.i,qi:S.qi+1,res:S.res,correct:S.correct,gain:S.gain,hp:S.hp,tiles:S.tiles,found:S.found};if(S.qi+1>=S.NQ||S.over)delete p.run;save()}
 function bumpCoins(){const c=$('pcoins');c.innerHTML=coinHTML(cur().coins);c.classList.remove('bump');void c.offsetWidth;c.classList.add('bump');SND.coin()}
 function showSheet(){if(!$('play').classList.contains('on')||!S||S.over&&S.qi>=S.NQ)return;const Q=S.Q;$('shT').textContent='כמעט! בואו נלמד מזה';$('shA').innerHTML='התשובה הנכונה: <b>'+M(fmt(Q.a))+'</b>';$('shE').innerHTML='איך פותרים: '+Q.ex;$('sheet').classList.add('on')}
-$('shBtn').onclick=()=>{$('sheet').classList.remove('on');advance()};
+$('shBtn').onclick=()=>{$('sheet').classList.remove('on');if(sheetNext){const f=sheetNext;sheetNext=null;f()}else advance()};
 function after(ok,ms=1100){const s0=S;if(ok)S.auto=setTimeout(()=>S===s0&&advance(),ms);else setTimeout(()=>S===s0&&showSheet(),700)}
 function advance(){clearTimeout(S.auto);if(S.quit||!$('play').classList.contains('on'))return;S.qi++;if(S.over||S.qi>=S.NQ)return MODES[S.mode].end?MODES[S.mode].end(finish):finish();nextQ()}
 $('pad').onclick=e=>{const b=e.target.closest('button');if(b)key(b.dataset.k)};
@@ -671,10 +864,10 @@ document.addEventListener('keydown',e=>{if(!$('play').classList.contains('on')||
 new ResizeObserver(()=>{if(!S||!$('play').classList.contains('on'))return;const w=field.clientWidth,h=field.clientHeight;if(!w||(w===S.W&&h===S.H))return;S.W=w;S.H=h;MODES[S.mode].resize&&MODES[S.mode].resize()}).observe(field);
 
 /* effects */
-function burst(x,y,colors,n=12,spread=70){for(let i=0;i<n;i++){const d=document.createElement('div');d.className='pt';const a=Math.random()*Math.PI*2,r=spread*(.5+Math.random()*.7);
- d.style.cssText=`left:${x-5}px;top:${y-5}px;background:${pick(colors)};--dx:${Math.cos(a)*r}px;--dy:${Math.sin(a)*r}px`;field.appendChild(d);setTimeout(()=>d.remove(),800)}}
-function floatText(t,x,y){const d=document.createElement('div');d.className='flt';d.textContent=t;d.style.left=(x-20)+'px';d.style.top=(y-20)+'px';field.appendChild(d);setTimeout(()=>d.remove(),1200)}
-function combo(t){const d=document.createElement('div');d.className='combo';d.innerHTML='<b>'+t+'</b>';field.appendChild(d);setTimeout(()=>d.remove(),1300)}
+function burst(x,y,colors,n=12,spread=70,host=field){for(let i=0;i<n;i++){const d=document.createElement('div');d.className='pt';const a=Math.random()*Math.PI*2,r=spread*(.5+Math.random()*.7);
+ d.style.cssText=`left:${x-5}px;top:${y-5}px;background:${pick(colors)};--dx:${Math.cos(a)*r}px;--dy:${Math.sin(a)*r}px`;host.appendChild(d);setTimeout(()=>d.remove(),800)}}
+function floatText(t,x,y,host=field){const d=document.createElement('div');d.className='flt';d.textContent=t;d.style.left=(x-20)+'px';d.style.top=(y-20)+'px';host.appendChild(d);setTimeout(()=>d.remove(),1200)}
+function combo(t,host=field){const d=document.createElement('div');d.className='combo';d.innerHTML='<b>'+t+'</b>';host.appendChild(d);setTimeout(()=>d.remove(),1300)}
 function tween(ms,fn,done){const t0=performance.now();const f=n=>{const k=Math.min(1,(n-t0)/ms);fn(k);if(k<1)requestAnimationFrame(f);else done&&done()};requestAnimationFrame(f)}
 function options(a){const s=new Set([a]);const c=shuffle([a+1,a-1,a+2,a-2,a+10,a-10,a*2,Math.round(a/2),a+5,a-5,-a,a+3]);
  for(const x of c){if(s.size>=4)break;if(!Number.isInteger(x)||(a>=0&&x<0))continue;s.add(x)}let k=3;while(s.size<4)s.add(a+k++);return shuffle([...s])}
@@ -801,8 +994,236 @@ $('nextBtn').onclick=()=>{walkFrom=null;startStation(S.i+1)};
 $('againBtn').onclick=()=>{walkFrom=null;startStation(S.i)};
 $('toMapBtn').onclick=openMap;
 
+
+/* =================== UPDATE: levels, hub, training, shooters, parent =================== */
+const TITLES=[[1,'מלח צעיר'],[3,'דייג'],[5,'שייט'],[7,'חוקר ים'],[10,'נווט'],[13,'סגן קפטן'],[16,'קפטן'],[20,'אדמירל'],[25,'אגדת הים']];
+const needXP=L=>100+(L-1)*50;
+function lvl(xp){let L=1,x=xp||0;while(x>=needXP(L)){x-=needXP(L);L++}return{L,into:x,need:needXP(L),title:TITLES.filter(t=>t[0]<=L).pop()[1]}}
+function addXP(p,n){const a=lvl(p.xp).L;p.xp=(p.xp||0)+n;const b=lvl(p.xp).L;return b>a?b:0}
+function fixPlayers2(){DB.players.forEach(p=>{p.xp=p.xp||0;p.best=p.best||{};p.grades=p.grades||{};p.stats=p.stats||{};p.mistakes=p.mistakes||[];p.redo=p.redo||{};
+ p.custom=p.custom||[];if(p.allowFree==null)p.allowFree=true;p.roundsPlayed=p.roundsPlayed||0})}
+fixPlayers2();
+
+/* ---- topics ---- */
+const OPN={add:'חיבור',sub:'חיסור',mul:'כפל',div:'חילוק'},SYM={add:'+',sub:'−',mul:'×',div:'÷'};
+const mkT=(op,fixed,from,to,label,upTo=0)=>({k:[op,fixed,from,to,upTo].join(':'),op,fixed,from,to,upTo,label});
+const N2_10=[2,3,4,5,6,7,8,9,10];
+const PRESETS={
+ mul:N2_10.map(n=>mkT('mul',n,1,10,'כפולות של '+n)).concat([mkT('mul',0,1,10,'לוח הכפל המלא')]),
+ add:[10,20,100,1000].map(n=>mkT('add',0,0,n,'חיבור עד '+n,n)),
+ sub:[10,20,100,1000].map(n=>mkT('sub',0,0,n,'חיסור עד '+n,n)),
+ div:N2_10.map(n=>mkT('div',n,1,10,'חילוק ב-'+n)).concat([mkT('div',0,1,10,'חילוק מלא')])};
+const ALLT=Object.values(PRESETS).flat();
+const customLabel=(op,f,a,b)=>OPN[op]+(f?' עם '+f:'')+' (\u2066'+a+'–'+b+'\u2069)';
+function topicOf(k){const t=ALLT.find(x=>x.k===k);if(t)return t;const [op,f,a,b,u]=k.split(':');return mkT(op,+f,+a,+b,customLabel(op,+f,+a,+b),+u)}
+const chipText=t=>{if(ALLT.includes(t)){if(t.op==='mul'&&t.fixed)return['כפולות של',t.fixed];if(t.op==='div'&&t.fixed)return['חילוק ב-',t.fixed];if(t.upTo)return[OPN[t.op]+' עד',t.upTo];return['כל',t.op==='mul'?'לוח הכפל':'החילוק']}return[OPN[t.op]+(t.fixed?' עם '+t.fixed:''),'\u2066'+t.from+'–'+t.to+'\u2069']};
+function genTopic(t,p){
+ const rd=p.redo[t.k];if(rd&&rd.length&&Math.random()<.35){const it=rd[R(0,rd.length-1)];return Object.assign({},it,{again:true})}
+ const lo=Math.min(t.from,t.to),hi=Math.max(t.from,t.to),r=()=>R(lo,hi);let a,b,ans,hint,ex;
+ if(t.op==='add'){if(t.upTo){a=R(0,t.upTo);b=R(0,t.upTo-a)}else if(t.fixed){a=t.fixed;b=r();if(Math.random()<.5)[a,b]=[b,a]}else{a=r();b=r()}
+  ans=a+b;hint=ans<=20?`מתחילים מ-${Math.max(a,b)} וסופרים קדימה ${Math.min(a,b)}`:'מחברים קודם את האחדות, אחר כך את העשרות';ex=M(`${fmt(a)} + ${fmt(b)} = ${fmt(ans)}`)}
+ else if(t.op==='sub'){if(t.upTo){a=R(1,t.upTo);b=R(0,a)}else if(t.fixed){b=t.fixed;a=b+r()}else{a=r();b=r();if(b>a)[a,b]=[b,a]}
+  ans=a-b;hint=`כמה צריך להוסיף ל-${b} כדי להגיע ל-${a}?`;ex=M(`${fmt(a)} − ${fmt(b)} = ${fmt(ans)}`)+' כי '+M(`${fmt(ans)} + ${fmt(b)} = ${fmt(a)}`)}
+ else if(t.op==='mul'){const n=t.fixed||R(2,10),m=r();ans=n*m;[a,b]=Math.random()<.5?[n,m]:[m,n];
+  hint=m>1&&n>0?`סופרים ${m} קפיצות של ${n}: ${n}, ${n*2}...`:'כל מספר כפול 1 שווה לעצמו, וכפול 0 שווה 0';
+  ex=M(`${a} × ${b} = ${fmt(ans)}`)+(m>=2&&m<=10&&n<=12?'<br>קפיצות של '+n+': '+M([...Array(m)].map((_,i)=>n*(i+1)).join(', ')):'')}
+ else{const d=t.fixed||R(2,10),q=r()||1;a=d*q;b=d;ans=q;hint=`איזה מספר כפול ${d} נותן ${a}?`;ex=M(`${d} × ${q} = ${a}`)+' ולכן '+M(`${a} ÷ ${d} = ${q}`)}
+ const raw=`${fmt(a)} ${SYM[t.op]} ${fmt(b)}`;return{raw,q:raw+' = ?',a:ans,hint,ex,k:t.k}}
+function medalOf(p,k){const g=p.grades[k]||{},top=(g.A||0)+(g.S||0);return top>=2?'gold':top>=1?'silver':(g.B||0)>=1?'bronze':''}
+const MEDAL_HE={gold:'זהב',silver:'כסף',bronze:'ארד'};
+
+/* ---- hub ---- */
+function openHub(){const p=cur();if(!p){renderHome();return show('home')}
+ const v=lvl(p.xp);$('hubCoins').innerHTML=coinHTML(p.coins);
+ $('hubCard').innerHTML=charSVG(p,'idle')+`<div class="info"><div class="nm"><b>${esc(p.name)}</b><span>כיתה ${GL[p.grade-1]}׳</span></div>
+  <div class="lvl"><em>רמה ${v.L}</em>${v.title}</div><div class="xpbar"><i style="width:${Math.round(v.into/v.need*100)}%"></i></div>
+  <span class="xpnote">עוד ${v.need-v.into} נקודות ניסיון לרמה ${v.L+1}</span></div>`;
+ const m=p.mission;
+ $('hubMission').innerHTML=m?`<div class="mission"><small>משימה מההורים</small><b class="t">${esc(topicOf(m.k).label)}</b>
+  <div class="row"><div class="bar3"><i style="width:${Math.min(100,m.done/m.rounds*100)}%"></i></div><b>${Math.min(m.done,m.rounds)} מתוך ${m.rounds} סבבים</b></div>
+  <span>${m.done>=m.rounds?'המשימה הושלמה! אפשר להמשיך להתאמן':(m.reward?'בסיום: '+m.reward+' מטבעות בונוס':'')}</span>
+  <button id="mGo">${m.done>=m.rounds?'עוד סבב':'מתחילים סבב'}</button></div>`:'';
+ const lockFree=!p.allowFree;$('goFree').classList.toggle('locked',lockFree);
+ $('freeNote').textContent=lockFree?'נעול על ידי ההורים':`המפה והאיים · ${totalStars(p)} כוכבים`;
+ show('hub')}
+$('hubBack').onclick=()=>{renderHome();show('home')};
+$('hubMission').onclick=e=>{if(e.target.closest('#mGo')){SND.tap();startRound([cur().mission.k],true)}};
+$('goTrain').onclick=()=>{SND.tap();openTrain()};
+$('goFree').onclick=()=>{if(!cur().allowFree){SND.bad();toast('ההורים כיבו את המסע החופשי כרגע');return}SND.tap();openMap()};
+$('hubShop').onclick=()=>{SND.tap();openShop()};
+$('hubParent').onclick=()=>{SND.tap();openPin()};
+
+/* ---- training picker ---- */
+let tTab='mul',tSel=[];
+const TABS=[['mul','כפל'],['add','חיבור'],['sub','חיסור'],['div','חילוק'],['mine','שלי']];
+function openTrain(){const p=cur();if(!tSel.length&&p.mission)tSel=[p.mission.k];if(!tSel.length)tSel=[PRESETS.mul[1].k];renderTrain();show('train')}
+function renderTrain(){const p=cur();
+ $('ttabs').innerHTML=TABS.map(([id,n])=>`<button data-t="${id}" class="${tTab===id?'sel':''}">${n}</button>`).join('');
+ const list=tTab==='mine'?p.custom.map(topicOf):PRESETS[tTab];
+ $('tTitle').textContent=tTab==='mine'?'התרגולים שבניתם':TABS.find(t=>t[0]===tTab)[1];
+ $('chips').innerHTML=list.length?list.map(t=>{const [s,b]=chipText(t),md=medalOf(p,t.k),best=p.best[t.k];
+  return `<button class="chip2 ${tSel.includes(t.k)?'sel':''}" data-k="${t.k}"><small>${s}</small><b class="${String(b).length>4?'w':''}">${b}</b><span class="medal ${md}">${md?MEDAL_HE[md]:'חדש'}</span>${best?`<small>שיא ${best.toLocaleString('en-US')}</small>`:''}</button>`}).join('')
+  :'<p class="muted" style="grid-column:1/-1">עוד אין כאן תרגולים. פתחו את "מתקדם" למטה ובנו אחד.</p>';
+ $('tGo').disabled=!tSel.length;$('tGo').style.opacity=tSel.length?1:.5;
+ $('tGo').textContent=tSel.length>1?`יוצאים לסבב! (${tSel.length} נושאים, 10 תרגילים)`:'יוצאים לסבב! (10 תרגילים)'}
+$('ttabs').onclick=e=>{const b=e.target.closest('button');if(!b)return;tTab=b.dataset.t;SND.tap();renderTrain()};
+$('chips').onclick=e=>{const b=e.target.closest('.chip2');if(!b)return;const k=b.dataset.k;tSel=tSel.includes(k)?tSel.filter(x=>x!==k):tSel.concat(k);SND.tap();renderTrain()};
+$('aAdd').onclick=()=>{const op=$('aOp').value,f=Math.max(0,Math.floor(+$('aFix').value||0)),a=Math.floor(+$('aFrom').value),b=Math.floor(+$('aTo').value);
+ if(!Number.isFinite(a)||!Number.isFinite(b)||a<0||b<0||a>10000||b>10000){$('aErr').textContent='בחרו טווח בין 0 ל-10000';return}
+ if(op==='div'&&f===0&&Math.max(a,b)>100){$('aErr').textContent='בחילוק בלי מספר קבוע, הטווח עד 100';return}
+ $('aErr').textContent='';const t=mkT(op,f,Math.min(a,b),Math.max(a,b),customLabel(op,f,Math.min(a,b),Math.max(a,b)));const p=cur();
+ if(!p.custom.includes(t.k))p.custom.push(t.k);save();tTab='mine';tSel=[t.k];$('adv').open=false;SND.coin();renderTrain();toast('נוסף: '+t.label)};
+$('tGo').onclick=()=>{if(tSel.length){SND.tap();startRound(tSel.slice(),false)}};
+
+/* ---- shooter round ---- */
+let G=null,sheetNext=null;const gf=$('gField');
+function startRound(keys,mission){const p=cur();
+ G={keys,mission,qi:0,N:10,res:[],score:0,streak:0,maxStreak:0,correct:0,speedB:0,comboB:0,game:p.roundsPlayed%2?'range':'space',items:[],t:0,ms:0,quit:false};
+ $('shoot').className='screen g-'+G.game;show('shoot');G.W=gf.clientWidth;G.H=gf.clientHeight;
+ $('gTopic').textContent=keys.length>1?keys.length+' נושאים':topicOf(keys[0]).label;$('gScore').textContent='0';
+ (G.game==='space'?spaceSetup:rangeSetup)();nextG()}
+function nextG(){const p=cur();const t=topicOf(pick(G.keys));let Q;for(let i=0;i<5;i++){Q=genTopic(t,p);if(Q.raw!==G.lastRaw)break}
+ G.Q=Q;G.lastRaw=Q.raw;G.locked=false;G.hint=false;G.q0=performance.now();
+ $('gQ').innerHTML=esc(Q.raw)+' = <span style="color:var(--coral)">?</span>';$('gHintT').className='ghint';$('gHintT').textContent='';
+ $('gProg').innerHTML=[...Array(G.N)].map((_,i)=>`<i class="${G.res[i]===1?'ok':G.res[i]===0?'no':i===G.qi?'now':''}"></i>`).join('');
+ const opts=options(Q.a);(G.game==='space'?spaceQ:rangeQ)(opts)}
+function gAnswer(it){if(!G||G.locked)return;G.locked=true;const p=cur(),Q=G.Q,ok=it.v===Q.a,dt=(performance.now()-G.q0)/1000;
+ const st=p.stats[Q.k]=p.stats[Q.k]||{c:0,t:0,ms:0};st.t++;st.ms+=Math.min(dt,60)*1000;G.ms+=Math.min(dt,60)*1000;G.res[G.qi]=ok?1:0;
+ const pos=(G.game==='space'?spaceShot:rangeShot)(it,ok);
+ if(ok){st.c++;G.correct++;G.streak++;G.maxStreak=Math.max(G.maxStreak,G.streak);
+  const sp=G.hint?0:dt<3?50:dt<6?25:0,cb=G.streak>=2?Math.min(100,(G.streak-1)*20):0,gain=100+sp+cb;G.score+=gain;G.speedB+=sp;G.comboB+=cb;
+  const rd=p.redo[Q.k];if(Q.again&&rd){p.redo[Q.k]=rd.filter(x=>x.raw!==Q.raw)}
+  SND.good();setTimeout(()=>{floatText('+'+gain,pos[0],pos[1],gf);if(sp)floatText(sp===50?'מהיר!':'זריז!',pos[0],pos[1]+30,gf);if(G.streak>=3)combo('רצף '+G.streak+'!',gf);
+   $('gScore').textContent=G.score.toLocaleString('en-US')},250);
+  G.auto=setTimeout(gNext,1100)}
+ else{G.streak=0;SND.bad();p.mistakes.unshift({raw:Q.raw,a:Q.a,w:it.v,k:Q.k,t:Date.now()});p.mistakes=p.mistakes.slice(0,30);
+  const rd=p.redo[Q.k]=p.redo[Q.k]||[];if(!rd.some(x=>x.raw===Q.raw)){rd.push({raw:Q.raw,q:Q.q,a:Q.a,hint:Q.hint,ex:Q.ex,k:Q.k});p.redo[Q.k]=rd.slice(-10)}
+  setTimeout(()=>{if(!G||G.quit)return;$('shT').textContent='כמעט! בואו נלמד מזה';$('shA').innerHTML='התשובה הנכונה: <b>'+M(fmt(Q.a))+'</b>';$('shE').innerHTML='איך פותרים: '+Q.ex;
+   sheetNext=gNext;$('sheet').classList.add('on')},800)}
+ save()}
+function gNext(){clearTimeout(G.auto);if(G.quit)return;G.qi++;if(G.qi>=G.N)return gFinish();nextG()}
+$('gHint').onclick=()=>{if(!G||G.locked)return;G.hint=true;SND.tap();$('gHintT').textContent='רמז: '+G.Q.hint;$('gHintT').className='ghint on'};
+$('gQuit').onclick=()=>{if(G){G.quit=true;clearTimeout(G.auto)}$('sheet').classList.remove('on');openHub()};
+function gTick(dt){if(!G||!$('shoot').classList.contains('on'))return;G.t+=dt;(G.game==='space'?spaceTick:rangeTick)(dt)}
+(function gl(){let last=0;const f=n=>{const dt=Math.min(.05,(n-last)/1000||0);last=n;gTick(dt);requestAnimationFrame(f)};requestAnimationFrame(f)})();
+new ResizeObserver(()=>{if(!G||!$('shoot').classList.contains('on'))return;const w=gf.clientWidth,h=gf.clientHeight;if(!w||(w===G.W&&h===G.H))return;G.W=w;G.H=h;
+ if(G.game==='range')rangeRails();G.items.forEach((it,k)=>{if(G.game==='space')it.x=G.W/4*k+G.W/8-43;else{it.y=k<2?G.r1-130:G.r2-130;it.x=Math.min(it.x,G.W-84)}})}).observe(gf);
+
+/* space */
+const ROCKC=[['#8a6b55','#5e4636'],['#7d6a8e','#54456a'],['#6f7f8e','#4a5866'],['#8e7a55','#655434']];
+const rockSVG=(c,e)=>`<svg viewBox="0 0 96 96"><path d="M48 6 L78 14 L92 44 L84 74 L56 92 L22 86 L6 58 L12 22Z" fill="${c}" stroke="${e}" stroke-width="5"/><circle cx="30" cy="30" r="7" fill="#00000026"/><circle cx="66" cy="64" r="9" fill="#00000026"/><circle cx="58" cy="28" r="4" fill="#00000026"/></svg>`;
+function spaceSetup(){gf.innerHTML=`<svg viewBox="0 0 120 80" style="position:absolute;right:6%;top:6%;width:110px;opacity:.85" aria-hidden="true"><circle cx="60" cy="40" r="26" fill="#ff8fa3"/><ellipse cx="60" cy="40" rx="50" ry="9" fill="none" stroke="#ffd1dc" stroke-width="3"/></svg>
+ <svg class="ship" id="ship" viewBox="0 0 110 130" aria-hidden="true"><path d="M55 4 C72 24 78 52 76 86 L34 86 C32 52 38 24 55 4Z" fill="#e8eef5" stroke="#8fa9c4" stroke-width="3"/><circle cx="55" cy="44" r="13" fill="#4ee6ff" stroke="#1e90ff" stroke-width="3"/><path d="M34 62 L8 92 L34 88Z M76 62 L102 92 L76 88Z" fill="${cur().color}"/><path class="flame" d="M40 86 L46 112 L55 100 L64 112 L70 86Z" fill="#ffc130"/></svg>
+ <div class="ammo">נוגעים באסטרואיד עם התשובה הנכונה</div>`;G.shipX=G.W/2-48;$('ship').style.transform=`translateX(${G.shipX}px)`}
+function spaceQ(opts){gf.querySelectorAll('.rock').forEach(e=>e.remove());const cw=G.W/4;
+ G.items=opts.map((v,k)=>{const el=document.createElement('button');el.className='rock';el.setAttribute('aria-label','תשובה '+fmt(v));const c=ROCKC[k];
+  el.innerHTML=rockSVG(c[0],c[1])+`<span class="${lblCls(v)}">${fmt(v)}</span>`;gf.appendChild(el);
+  const it={el,v,x:cw*k+cw/2-43,y:-90+R(0,40)-(k%2)*50,vy:16+Math.random()*10,rot:R(0,360),vr:(Math.random()-.5)*40,st:'fall'};el.onclick=()=>gAnswer(it);return it})}
+function spaceTick(dt){const lim=G.H-190;for(const it of G.items){if(it.st==='gone')continue;
+ if(it.st==='fall'){it.y+=it.vy*dt*(it.y<0?4:1);if(it.y>lim)it.y=-95}else if(it.st==='away')it.y-=500*dt;
+ it.rot+=it.vr*dt;it.el.style.transform=`translate(${it.x}px,${it.y}px)`;it.el.firstElementChild.style.transform=`rotate(${it.rot}deg)`}}
+function spaceShot(it,ok){const cx=it.x+43,cy=it.y+43;G.shipX=Math.max(0,Math.min(G.W-96,cx-48));$('ship').style.transform=`translateX(${G.shipX}px)`;
+ setTimeout(()=>{const top=cy,shipTop=G.H-112;const l=document.createElement('div');l.className='laser';l.style.left=cx+'px';l.style.top=top+'px';l.style.height=Math.max(10,shipTop-top+10)+'px';gf.appendChild(l);setTimeout(()=>l.remove(),400);
+  SND.fire();if(ok){SND.boom();burst(cx,cy,['#ffc130','#ff6a48','#fff','#8a6b55'],20,90,gf);it.el.remove();it.st='gone';G.items.forEach(o=>{if(o!==it)o.st='away'})}
+  else{it.el.classList.add('bad','shake');const c=G.items.find(o=>o.v===G.Q.a);c&&c.el.classList.add('glow');c&&(c.vy=4)}},200);
+ return[cx,cy]}
+
+/* range */
+const TCOL=['#e0245e','#1e90ff','#22b569','#ff9f1c'];
+const tgtSVG=c=>`<svg viewBox="0 0 84 130"><rect x="38" y="78" width="8" height="52" fill="#5b3a1a"/><circle cx="42" cy="42" r="40" fill="#fff" stroke="#1b2836" stroke-width="3"/><circle cx="42" cy="42" r="31" fill="${c}"/><circle cx="42" cy="42" r="22" fill="#fff"/></svg>`;
+function rangeRails(){G.r1=Math.round(Math.max(190,G.H*.42));G.r2=Math.round(Math.max(G.r1+150,G.H*.78));gf.style.setProperty('--r1',G.r1+'px');gf.style.setProperty('--r2',G.r2+'px')}
+function rangeSetup(){gf.innerHTML=`<svg class="cross" id="cross" viewBox="0 0 120 120" aria-hidden="true"><circle cx="60" cy="60" r="44" fill="none" stroke="#4ee6ff" stroke-width="6"/><path d="M60 4 V36 M60 84 V116 M4 60 H36 M84 60 H116" stroke="#4ee6ff" stroke-width="6" stroke-linecap="round"/><circle cx="60" cy="60" r="6" fill="#ff6a48"/></svg><div class="ammo">המטרות זזות. נוגעים במטרה עם התשובה</div>`;
+ rangeRails();G.cx=G.W/2-48;G.cy=G.H-180;$('cross').style.transform=`translate(${G.cx}px,${G.cy}px)`}
+function rangeQ(opts){gf.querySelectorAll('.tgt').forEach(e=>e.remove());
+ G.items=opts.map((v,k)=>{const el=document.createElement('button');el.className='tgt';el.setAttribute('aria-label','תשובה '+fmt(v));
+  el.innerHTML=tgtSVG(TCOL[k])+`<span class="${lblCls(v)}">${fmt(v)}</span>`;gf.appendChild(el);const row=k<2?0:1;
+  const sp=(32+Math.random()*26)*(Math.random()<.5?-1:1);const it={el,v,x:row?(k===2?G.W*.08:G.W*.6):(k===0?G.W*.1:G.W*.55),y:(row?G.r2:G.r1)-130,vx:sp,st:'move'};
+  el.onclick=()=>gAnswer(it);return it})}
+function rangeTick(dt){for(const it of G.items){if(it.st==='gone')continue;if(it.st==='move'||it.st==='slow'){it.x+=it.vx*dt*(it.st==='slow'?.2:1);
+  if(it.x<0){it.x=0;it.vx=Math.abs(it.vx)}if(it.x>G.W-84){it.x=G.W-84;it.vx=-Math.abs(it.vx)}}
+ it.el.style.transform=`translate(${it.x}px,${it.y}px)`+(it.st==='down'?' scaleY(.08)':'')}}
+function rangeShot(it,ok){const cx=it.x+42,cy=it.y+42;$('cross').style.transform=`translate(${cx-48}px,${cy-48}px)`;
+ setTimeout(()=>{SND.fire();const bg=document.createElement('div');bg.className='bang';bg.textContent=ok?'פגיעה!':'פספוס';bg.style.left=(cx-34)+'px';bg.style.top=(cy-70)+'px';gf.appendChild(bg);setTimeout(()=>bg.remove(),800);
+  if(ok){SND.pop();burst(cx,cy,['#fff','#ffc130',TCOL[G.items.indexOf(it)]||'#fff'],16,70,gf);it.el.classList.add('down');it.st='down';G.items.forEach(o=>{if(o!==it)o.st='still'})}
+  else{it.el.classList.add('bad','shake');const c=G.items.find(o=>o.v===G.Q.a);if(c){c.el.classList.add('glow');c.st='slow'}}},220);
+ return[cx,cy]}
+
+/* ---- round result ---- */
+function gFinish(){const p=cur(),c=G.correct;const grade=c===10&&G.speedB>=300?'S':c>=9?'A':c>=7?'B':c>=5?'C':'D';
+ const bk=G.keys.slice().sort().join('|'),prev=p.best[bk]||0,isBest=G.score>prev;if(isBest)p.best[bk]=G.score;
+ if(['S','A','B'].includes(grade))G.keys.forEach(k=>{const g=p.grades[k]=p.grades[k]||{};g[grade]=(g[grade]||0)+1});
+ const xp=Math.round(G.score/10),coins=c*5+(grade==='S'||grade==='A'?20:0);const up=addXP(p,xp);p.coins+=coins;p.roundsPlayed++;
+ let mLine='';const m=p.mission;if(G.mission&&m&&G.keys.length===1&&G.keys[0]===m.k&&c>=5){m.done++;if(m.done>=m.rounds&&!m.rewarded){m.rewarded=true;p.coins+=m.reward;mLine=`<p class="sc"><b>המשימה הושלמה!</b> קיבלת ${m.reward} מטבעות בונוס</p>`}else if(m.done<m.rounds)mLine=`<p class="sc">משימה: ${m.done} מתוך ${m.rounds} סבבים</p>`}
+ else if(G.mission&&c<5)mLine='<p class="sc">כדי שהסבב ייחשב למשימה צריך לפחות 5 תשובות נכונות</p>';
+ save();const v=lvl(p.xp),gc={S:'#7a5cff',A:'#ffc130',B:'#c5ced6',C:'#d9a06a',D:'#b8c4cc'}[grade];
+ const md=G.keys.length===1?medalOf(p,G.keys[0]):'';
+ $('gdBody').innerHTML=`${charSVG(p,grade==='D'?'sad':'happy').replace('<svg class','<svg style="width:96px;height:110px" class')}
+  <p class="muted" style="margin:0">${esc(G.keys.length>1?G.keys.length+' נושאים':topicOf(G.keys[0]).label)} · ${G.game==='space'?'חללית':'מטווח'}</p>
+  <div class="grade pop"><svg viewBox="0 0 150 150" aria-hidden="true"><circle cx="75" cy="75" r="68" fill="${gc}"/><circle cx="75" cy="75" r="56" fill="#fff" opacity=".45"/></svg><b>${grade}</b></div>
+  <div class="gtotal">${G.score.toLocaleString('en-US')}</div>${isBest&&prev?`<span class="newbest">שיא אישי חדש! (קודם: ${prev.toLocaleString('en-US')})</span>`:isBest?'<span class="newbest">השיא הראשון שלך!</span>':`<p class="muted">השיא שלך: ${prev.toLocaleString('en-US')}</p>`}
+  <div class="brk"><div><span>תשובות נכונות ${c}/10</span><b>${c*100}</b></div><div><span>בונוס רצף (הכי ארוך: ${G.maxStreak})</span><b>+${G.comboB}</b></div><div><span>בונוס מהירות</span><b>+${G.speedB}</b></div><hr><div><b>סה״כ</b><b>${G.score.toLocaleString('en-US')}</b></div></div>
+  <div class="xpbox"><div class="top"><b>+${xp} נקודות ניסיון · +${coins} מטבעות</b>${up?`<span class="upbadge">עלית לרמה ${up}!</span>`:''}</div>
+  <div class="xpbar"><i style="width:${Math.round(v.into/v.need*100)}%"></i></div><span class="xpnote">רמה ${v.L} · ${v.title}</span>
+  ${md||G.keys.length===1?`<span>מדליה ב${esc(topicOf(G.keys[0]).label)}: <span class="medal ${md}">${md?MEDAL_HE[md]:'עוד אין'}</span>${md!=='gold'?' · '+(md==='silver'?'עוד סבב בציון A לזהב':md==='bronze'?'ציון A לכסף':'ציון B לארד'):''}</span>`:''}</div>
+  ${mLine}
+  <div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px"><button class="big alt" id="gAgain">עוד סבב</button><button class="big ghost" id="gHome">לבית</button></div>
+  <p class="gscale">ציונים: S = 10/10 ומהיר · A = 9–10 · B = 7–8 · C = 5–6</p>`;
+ show('gdone');if(grade!=='D'){SND.win();confetti()}if(up)setTimeout(()=>toast('עלית לרמה '+up+': '+lvl(p.xp).title+'!'),600)}
+$('gdBody').onclick=e=>{if(e.target.closest('#gAgain'))startRound(G.keys,G.mission);else if(e.target.closest('#gHome'))openHub()};
+
+/* ---- parent area: PIN ---- */
+let pinBuf='',pinMode='',pinFirst='';
+function openPin(){pinBuf='';pinMode=DB.pin?'enter':'set';renderPin();show('pin')}
+function renderPin(msg){const title={enter:'הקלידו את קוד ההורים',set:'בחרו קוד הורים (4 ספרות)',confirm:'הקלידו שוב את הקוד',newset:'בחרו קוד חדש (4 ספרות)'}[pinMode];
+ if(pinMode==='secq'){$('pinBody').innerHTML=`<h2>שאלת אבטחה</h2><p class="muted">אם תשכחו את הקוד, התשובה תאפשר לקבוע קוד חדש.</p>
+  <div class="pform" style="text-align:start"><label>שאלה<input id="sq" type="text" value="שם הרחוב שגדלתי בו"></label><label>תשובה<input id="sa" type="text" autocomplete="off"></label></div>
+  <p class="err" id="sqErr"></p><button class="big alt" id="sqSave">שמירה</button>`;return}
+ if(pinMode==='forgot'){$('pinBody').innerHTML=`<h2>שכחתם את הקוד?</h2><p>${esc(DB.secQ||'')}</p><div class="pform"><label>התשובה<input id="fa" type="text" autocomplete="off"></label></div>
+  <p class="err" id="faErr"></p><button class="big alt" id="faGo">המשך</button>`;return}
+ $('pinBody').innerHTML=`<h2>${title}</h2><div class="dots">${[0,1,2,3].map(i=>`<i class="${i<pinBuf.length?'on':''}"></i>`).join('')}</div><p class="err">${msg||''}</p>
+  <div class="pinpad">${['1','2','3','4','5','6','7','8','9','','0','⌫'].map(k=>k?`<button data-k="${k}" ${k==='⌫'?'aria-label="מחיקה"':''}>${k}</button>`:'<span></span>').join('')}</div>
+  ${pinMode==='enter'&&DB.secQ?'<button class="linkb" id="forgot">שכחתי את הקוד</button>':''}`}
+async function hashPin(s){try{const b=await crypto.subtle.digest('SHA-256',new TextEncoder().encode('imisparim:'+s));return [...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,'0')).join('')}catch(e){return 'p'+s}}
+const normA=s=>String(s||'').trim().replace(/\s+/g,' ').toLowerCase();
+$('pinBody').onclick=async e=>{const b=e.target.closest('button');if(!b)return;
+ if(b.id==='forgot'){pinMode='forgot';return renderPin()}
+ if(b.id==='faGo'){if(await hashPin(normA($('fa').value))===DB.secA){pinMode='newset';pinBuf='';renderPin()}else $('faErr').textContent='התשובה לא נכונה';return}
+ if(b.id==='sqSave'){const q=$('sq').value.trim(),a=normA($('sa').value);if(!q||!a){$('sqErr').textContent='מלאו שאלה ותשובה';return}DB.secQ=q;DB.secA=await hashPin(a);save();toast('קוד ההורים נשמר');openParent();return}
+ const k=b.dataset.k;if(!k)return;SND.tap();if(k==='⌫'){pinBuf=pinBuf.slice(0,-1);return renderPin()}if(pinBuf.length<4)pinBuf+=k;renderPin();if(pinBuf.length<4)return;
+ const v=pinBuf;pinBuf='';
+ if(pinMode==='enter'){if(await hashPin(v)===DB.pin)openParent();else{SND.bad();renderPin('קוד שגוי, נסו שוב')}}
+ else if(pinMode==='set'||pinMode==='newset'){pinFirst=v;pinMode='confirm';renderPin()}
+ else if(pinMode==='confirm'){if(v===pinFirst){DB.pin=await hashPin(v);save();if(!DB.secQ){pinMode='secq';renderPin()}else{toast('הקוד עודכן');openParent()}}else{pinMode=DB.pin?'newset':'set';renderPin('הקודים לא תואמים, נסו שוב')}}};
+$('pinChange').onclick=()=>{pinMode='newset';pinBuf='';renderPin();show('pin')};
+
+/* ---- parent panel ---- */
+let pKid=null;
+function openParent(){pKid=DB.cur||(DB.players[0]&&DB.players[0].id);renderParent();show('parent')}
+function renderParent(){const p=DB.players.find(x=>x.id===pKid);if(!p){$('kids').innerHTML='<p class="muted">עוד אין שחקנים.</p>';return}
+ $('kids').innerHTML=DB.players.map(q=>`<button data-id="${q.id}" class="${q.id===pKid?'sel':''}">${esc(q.name)} · ${GL[q.grade-1]}׳</button>`).join('');
+ $('mTitle').textContent='המשימה של '+p.name;
+ const opts=Object.entries(PRESETS).map(([op,ts])=>`<optgroup label="${OPN[op]}">${ts.map(t=>`<option value="${t.k}">${t.label}</option>`).join('')}</optgroup>`).join('')+
+  (p.custom.length?`<optgroup label="שבנו בעצמם">${p.custom.map(k=>`<option value="${k}">${esc(topicOf(k).label)}</option>`).join('')}</optgroup>`:'');
+ $('mTopic').innerHTML=opts;const m=p.mission;if(m){$('mTopic').value=m.k;$('mRounds').value=m.rounds;$('mReward').value=m.reward}
+ $('mState').textContent=m?`פעילה: ${topicOf(m.k).label} · ${Math.min(m.done,m.rounds)} מתוך ${m.rounds} סבבים${m.rewarded?' · הושלמה':''}`:'אין משימה פעילה. בחרו נושא ושמרו.';
+ $('allowFree').checked=p.allowFree;
+ const rows=Object.entries(p.stats).filter(([,s])=>s.t>0).sort((a,b)=>b[1].t-a[1].t);const totalMs=rows.reduce((s,[,x])=>s+x.ms,0);
+ $('repTime').textContent=rows.length?'זמן אימון: '+Math.max(1,Math.round(totalMs/60000))+' דק׳':'';
+ $('rep').innerHTML=rows.length?rows.map(([k,s])=>{const pc=Math.round(s.c/s.t*100),col=pc>=90?'#22b569':pc>=70?'#ffc130':'#ff6a48',md=medalOf(p,k);
+  return `<div class="rep"><span>${esc(topicOf(k).label)} <small class="muted">(${s.t})</small> ${md?`<span class="medal ${md}">${MEDAL_HE[md]}</span>`:''}</span><div class="b"><i style="width:${pc}%;background:${col}"></i></div><b>${pc}%</b></div>`}).join('')+'<p class="muted">מבוסס על האימון הממוקד.</p>'
+  :'<p class="muted">עוד אין נתונים. הדוח מתמלא מהאימון הממוקד.</p>';
+ const cnt={};p.mistakes.forEach(x=>cnt[x.raw]=(cnt[x.raw]||0)+1);const rep=Object.entries(cnt).filter(([,n])=>n>1).map(([r])=>r);
+ $('mistakes').innerHTML=p.mistakes.length?p.mistakes.slice(0,10).map(x=>`<div class="mis"><b class="m">${esc(x.raw)}</b><span class="w">ענה ${fmt(x.w)}</span><span class="r">נכון: ${fmt(x.a)}</span></div>`).join('')+
+  (rep.length?`<p class="muted">טעויות שחוזרות: ${rep.slice(0,4).map(r=>'<span class="m">'+esc(r)+'</span>').join(', ')}. המשחק ישאל אותן יותר בסבבים הבאים.</p>`:'')
+  :'<p class="muted">אין טעויות עדיין.</p>'}
+$('kids').onclick=e=>{const b=e.target.closest('button');if(!b)return;pKid=b.dataset.id;renderParent()};
+$('mSave').onclick=()=>{const p=DB.players.find(x=>x.id===pKid);const k=$('mTopic').value,r=Math.max(1,Math.min(50,Math.floor(+$('mRounds').value)||5)),w=Math.max(0,Math.min(1000,Math.floor(+$('mReward').value)||0));
+ const same=p.mission&&p.mission.k===k;p.mission={k,rounds:r,reward:w,done:same?p.mission.done:0,rewarded:same&&p.mission.rewarded&&p.mission.done>=r};save();SND.coin();toast('המשימה נשמרה');renderParent()};
+$('mClear').onclick=()=>{const p=DB.players.find(x=>x.id===pKid);delete p.mission;save();toast('המשימה בוטלה');renderParent()};
+$('allowFree').onchange=e=>{const p=DB.players.find(x=>x.id===pKid);p.allowFree=e.target.checked;save()};
+
 renderHome();
-if(cur())openMap();
+if(cur())openHub();
 }
 </script>
 <script>if('serviceWorker' in navigator&&location.protocol!=='file:')addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}));</script>
