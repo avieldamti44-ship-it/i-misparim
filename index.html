@@ -268,15 +268,15 @@ textarea{font-size:13px;min-height:90px;direction:ltr}
 .gfield{position:relative;flex:1;margin-top:8px;border-radius:22px;overflow:hidden;touch-action:manipulation}
 .g-space .gfield{background:radial-gradient(1.5px 1.5px at 10% 20%,#fff,transparent),radial-gradient(1px 1px at 30% 60%,#fff,transparent),radial-gradient(1.4px 1.4px at 80% 30%,#fff,transparent),radial-gradient(1px 1px at 60% 80%,#fff,transparent),radial-gradient(1.2px 1.2px at 90% 70%,#fff,transparent),radial-gradient(1px 1px at 45% 15%,#fff,transparent);background-size:180px 180px}
 .g-range .gfield{background:linear-gradient(#e0245e 0 46px,transparent 46px),repeating-linear-gradient(90deg,#ffc130 0 22px,transparent 22px 98px) 0 0/100% 46px no-repeat,linear-gradient(transparent 0 calc(var(--r1) - 6px),#8a5a2b calc(var(--r1) - 6px) var(--r1),transparent var(--r1) calc(var(--r2) - 6px),#8a5a2b calc(var(--r2) - 6px) var(--r2),transparent var(--r2) calc(100% - 70px),#a8642c calc(100% - 70px)),#3d2659}
-.rock,.tgt{position:absolute;left:0;top:0;background:none;padding:0;min-height:0;border-radius:50%;will-change:transform}
-.rock{width:86px;height:86px}.rock svg{width:100%;height:100%;display:block;pointer-events:none}
-.rock span,.tgt span{position:absolute;inset:0;display:grid;place-items:center;font-weight:900;color:#fff;text-shadow:0 2px 0 rgba(0,0,0,.45);direction:ltr;pointer-events:none;font-size:26px}
+.astro,.tgt{position:absolute;left:0;top:0;background:none;padding:0;min-height:0;border-radius:50%;will-change:transform}
+.astro{width:92px;height:92px;padding:0}.astro svg{width:100%;height:100%;display:block;pointer-events:none}
+.astro span,.tgt span{position:absolute;inset:0;display:grid;place-items:center;font-weight:900;color:#fff;text-shadow:0 2px 0 rgba(0,0,0,.45);direction:ltr;pointer-events:none;font-size:26px}
 .tgt{width:84px;height:130px;border-radius:0}.tgt svg{width:100%;height:100%;display:block;pointer-events:none}
 .tgt span{inset:0 0 auto 0;height:84px;color:#1b2836;text-shadow:none}
 .tgt.down{transition:transform .35s ease-in;transform-origin:50% 100%}
-.rock.bad,.tgt.bad{filter:drop-shadow(0 0 10px #ff3b3b)}
-.ship{position:absolute;bottom:6px;left:0;width:96px;height:112px;transition:transform .22s ease-out;pointer-events:none;z-index:2}
-.laser{position:absolute;width:6px;margin-left:-3px;background:linear-gradient(#4ee6ff,#d6fbff);border-radius:3px;box-shadow:0 0 14px #4ee6ff;animation:laser .35s ease-out forwards;z-index:1;pointer-events:none}
+.astro.bad,.tgt.bad{filter:drop-shadow(0 0 10px #ff3b3b)}
+.ship{position:absolute;bottom:26px;left:0;width:96px;height:112px;transition:transform .18s ease-out;transform-origin:50% 60%;pointer-events:none;z-index:2}
+.laser{position:absolute;width:6px;margin-left:-3px;transform-origin:50% 100%;background:linear-gradient(#4ee6ff,#d6fbff);border-radius:3px;box-shadow:0 0 14px #4ee6ff;animation:laser .35s ease-out forwards;z-index:1;pointer-events:none}
 @keyframes laser{0%{opacity:1}100%{opacity:0}}
 .cross{position:absolute;left:0;top:0;width:96px;height:96px;transition:transform .22s ease-out;pointer-events:none;z-index:4}
 .bang{position:absolute;font-weight:900;color:#fff;font-size:24px;text-shadow:0 2px 0 #c0392b;animation:flt .7s ease-out forwards;pointer-events:none;z-index:5}
@@ -1095,7 +1095,7 @@ function gAnswer(it){if(!G||G.locked)return;G.locked=true;const p=cur(),Q=G.Q,ok
   const rd=p.redo[Q.k];if(Q.again&&rd){p.redo[Q.k]=rd.filter(x=>x.raw!==Q.raw)}
   SND.good();setTimeout(()=>{floatText('+'+gain,pos[0],pos[1],gf);if(sp)floatText(sp===50?'מהיר!':'זריז!',pos[0],pos[1]+30,gf);if(G.streak>=3)combo('רצף '+G.streak+'!',gf);
    $('gScore').textContent=G.score.toLocaleString('en-US')},250);
-  G.auto=setTimeout(gNext,1100)}
+  G.auto=setTimeout(gNext,850)}
  else{G.streak=0;SND.bad();p.mistakes.unshift({raw:Q.raw,a:Q.a,w:it.v,k:Q.k,t:Date.now()});p.mistakes=p.mistakes.slice(0,30);
   const rd=p.redo[Q.k]=p.redo[Q.k]||[];if(!rd.some(x=>x.raw===Q.raw)){rd.push({raw:Q.raw,q:Q.q,a:Q.a,hint:Q.hint,ex:Q.ex,k:Q.k});p.redo[Q.k]=rd.slice(-10)}
   setTimeout(()=>{if(!G||G.quit)return;$('shT').textContent='כמעט! בואו נלמד מזה';$('shA').innerHTML='התשובה הנכונה: <b>'+M(fmt(Q.a))+'</b>';$('shE').innerHTML='איך פותרים: '+Q.ex;
@@ -1107,25 +1107,29 @@ $('gQuit').onclick=()=>{if(G){G.quit=true;clearTimeout(G.auto)}$('sheet').classL
 function gTick(dt){if(!G||!$('shoot').classList.contains('on'))return;G.t+=dt;(G.game==='space'?spaceTick:rangeTick)(dt)}
 (function gl(){let last=0;const f=n=>{const dt=Math.min(.05,(n-last)/1000||0);last=n;gTick(dt);requestAnimationFrame(f)};requestAnimationFrame(f)})();
 new ResizeObserver(()=>{if(!G||!$('shoot').classList.contains('on'))return;const w=gf.clientWidth,h=gf.clientHeight;if(!w||(w===G.W&&h===G.H))return;G.W=w;G.H=h;
- if(G.game==='range')rangeRails();G.items.forEach((it,k)=>{if(G.game==='space')it.x=G.W/4*k+G.W/8-43;else{it.y=k<2?G.r1-130:G.r2-130;it.x=Math.min(it.x,G.W-84)}})}).observe(gf);
+ if(G.game==='range')rangeRails();G.items.forEach((it,k)=>{if(G.game==='space'){const h=astroHome(k);it.x=h[0];it.hy=h[1];if(it.st==='float')it.y=h[1];G.shipX=G.W/2-48}else{it.y=k<2?G.r1-130:G.r2-130;it.x=Math.min(it.x,G.W-84)}})}).observe(gf);
 
 /* space */
 const ROCKC=[['#8a6b55','#5e4636'],['#7d6a8e','#54456a'],['#6f7f8e','#4a5866'],['#8e7a55','#655434']];
 const rockSVG=(c,e)=>`<svg viewBox="0 0 96 96"><path d="M48 6 L78 14 L92 44 L84 74 L56 92 L22 86 L6 58 L12 22Z" fill="${c}" stroke="${e}" stroke-width="5"/><circle cx="30" cy="30" r="7" fill="#00000026"/><circle cx="66" cy="64" r="9" fill="#00000026"/><circle cx="58" cy="28" r="4" fill="#00000026"/></svg>`;
-function spaceSetup(){gf.innerHTML=`<svg viewBox="0 0 120 80" style="position:absolute;right:6%;top:6%;width:110px;opacity:.85" aria-hidden="true"><circle cx="60" cy="40" r="26" fill="#ff8fa3"/><ellipse cx="60" cy="40" rx="50" ry="9" fill="none" stroke="#ffd1dc" stroke-width="3"/></svg>
- <svg class="ship" id="ship" viewBox="0 0 110 130" aria-hidden="true"><path d="M55 4 C72 24 78 52 76 86 L34 86 C32 52 38 24 55 4Z" fill="#e8eef5" stroke="#8fa9c4" stroke-width="3"/><circle cx="55" cy="44" r="13" fill="#4ee6ff" stroke="#1e90ff" stroke-width="3"/><path d="M34 62 L8 92 L34 88Z M76 62 L102 92 L76 88Z" fill="${cur().color}"/><path class="flame" d="M40 86 L46 112 L55 100 L64 112 L70 86Z" fill="#ffc130"/></svg>
+function spaceSetup(){gf.innerHTML=`<svg viewBox="0 0 120 80" style="position:absolute;right:6%;top:42%;width:100px;opacity:.7" aria-hidden="true"><circle cx="60" cy="40" r="26" fill="#ff8fa3"/><ellipse cx="60" cy="40" rx="50" ry="9" fill="none" stroke="#ffd1dc" stroke-width="3"/></svg>
+ <svg class="ship" id="ship" viewBox="0 0 110 130" aria-hidden="true"><path d="M55 4 C72 24 78 52 76 86 L34 86 C32 52 38 24 55 4Z" fill="#e8eef5" stroke="#8fa9c4" stroke-width="3"/><circle cx="55" cy="44" r="13" fill="#4ee6ff" stroke="#1e90ff" stroke-width="3"/><path d="M34 62 L8 92 L34 88Z M76 62 L102 92 L76 88Z" fill="${cur().color}"/><path d="M40 86 L46 112 L55 100 L64 112 L70 86Z" fill="#ffc130"/></svg>
  <div class="ammo">נוגעים באסטרואיד עם התשובה הנכונה</div>`;G.shipX=G.W/2-48;$('ship').style.transform=`translateX(${G.shipX}px)`}
-function spaceQ(opts){gf.querySelectorAll('.rock').forEach(e=>e.remove());const cw=G.W/4;
- G.items=opts.map((v,k)=>{const el=document.createElement('button');el.className='rock';el.setAttribute('aria-label','תשובה '+fmt(v));const c=ROCKC[k];
-  el.innerHTML=rockSVG(c[0],c[1])+`<span class="${lblCls(v)}">${fmt(v)}</span>`;gf.appendChild(el);
-  const it={el,v,x:cw*k+cw/2-43,y:-90+R(0,40)-(k%2)*50,vy:16+Math.random()*10,rot:R(0,360),vr:(Math.random()-.5)*40,st:'fall'};el.onclick=()=>gAnswer(it);return it})}
-function spaceTick(dt){const lim=G.H-190;for(const it of G.items){if(it.st==='gone')continue;
- if(it.st==='fall'){it.y+=it.vy*dt*(it.y<0?4:1);if(it.y>lim)it.y=-95}else if(it.st==='away')it.y-=500*dt;
- it.rot+=it.vr*dt;it.el.style.transform=`translate(${it.x}px,${it.y}px)`;it.el.firstElementChild.style.transform=`rotate(${it.rot}deg)`}}
-function spaceShot(it,ok){const cx=it.x+43,cy=it.y+43;G.shipX=Math.max(0,Math.min(G.W-96,cx-48));$('ship').style.transform=`translateX(${G.shipX}px)`;
- setTimeout(()=>{const top=cy,shipTop=G.H-112;const l=document.createElement('div');l.className='laser';l.style.left=cx+'px';l.style.top=top+'px';l.style.height=Math.max(10,shipTop-top+10)+'px';gf.appendChild(l);setTimeout(()=>l.remove(),400);
+function astroHome(k){const cw=G.W/4,top=Math.max(8,G.H*.08),row=Math.min(130,Math.max(96,G.H*.2));return[cw*k+cw/2-46,top+(k%2)*row]}
+function spaceQ(opts){gf.querySelectorAll('.astro').forEach(e=>e.remove());$('ship').style.transform=`translateX(${G.shipX}px)`;
+ G.items=opts.map((v,k)=>{const el=document.createElement('button');el.className='astro';el.setAttribute('aria-label','תשובה '+fmt(v));const c=ROCKC[k];
+  el.innerHTML=rockSVG(c[0],c[1])+`<span class="${lblCls(v)}">${fmt(v)}</span>`;gf.appendChild(el);const [hx,hy]=astroHome(k);
+  const it={el,v,x:hx,y:-110,hy,ph:Math.random()*6,rot:R(0,360),vr:(Math.random()-.5)*30,st:'in'};el.onclick=()=>gAnswer(it);return it})}
+function spaceTick(dt){for(const it of G.items){if(it.st==='gone')continue;
+ if(it.st==='in'){it.y+=(it.hy-it.y)*Math.min(1,dt*9);if(Math.abs(it.hy-it.y)<1)it.st='float'}
+ else if(it.st==='away')it.y-=600*dt;
+ const bob=it.st==='float'?Math.sin(G.t*1.6+it.ph)*5:0;it.rot+=it.vr*dt;
+ it.el.style.transform=`translate(${it.x}px,${it.y+bob}px)`;it.el.firstElementChild.style.transform=`rotate(${it.rot}deg)`}}
+function spaceShot(it,ok){const cx=it.x+46,cy=it.y+46,sx=G.shipX+48,sy=G.H-26-112*.4;const ang=Math.atan2(cx-sx,sy-cy)*180/Math.PI;
+ $('ship').style.transform=`translateX(${G.shipX}px) rotate(${ang}deg)`;
+ setTimeout(()=>{const len=Math.hypot(cx-sx,sy-cy);const l=document.createElement('div');l.className='laser';l.style.left=sx+'px';l.style.top=(sy-len)+'px';l.style.height=len+'px';l.style.transform=`rotate(${ang}deg)`;gf.appendChild(l);setTimeout(()=>l.remove(),400);
   SND.fire();if(ok){SND.boom();burst(cx,cy,['#ffc130','#ff6a48','#fff','#8a6b55'],20,90,gf);it.el.remove();it.st='gone';G.items.forEach(o=>{if(o!==it)o.st='away'})}
-  else{it.el.classList.add('bad','shake');const c=G.items.find(o=>o.v===G.Q.a);c&&c.el.classList.add('glow');c&&(c.vy=4)}},200);
+  else{it.el.classList.add('bad','shake');const c=G.items.find(o=>o.v===G.Q.a);c&&c.el.classList.add('glow')}},170);
  return[cx,cy]}
 
 /* range */
@@ -1137,7 +1141,7 @@ function rangeSetup(){gf.innerHTML=`<svg class="cross" id="cross" viewBox="0 0 1
 function rangeQ(opts){gf.querySelectorAll('.tgt').forEach(e=>e.remove());
  G.items=opts.map((v,k)=>{const el=document.createElement('button');el.className='tgt';el.setAttribute('aria-label','תשובה '+fmt(v));
   el.innerHTML=tgtSVG(TCOL[k])+`<span class="${lblCls(v)}">${fmt(v)}</span>`;gf.appendChild(el);const row=k<2?0:1;
-  const sp=(32+Math.random()*26)*(Math.random()<.5?-1:1);const it={el,v,x:row?(k===2?G.W*.08:G.W*.6):(k===0?G.W*.1:G.W*.55),y:(row?G.r2:G.r1)-130,vx:sp,st:'move'};
+  const sp=(16+Math.random()*14)*(Math.random()<.5?-1:1);const it={el,v,x:row?(k===2?G.W*.08:G.W*.6):(k===0?G.W*.1:G.W*.55),y:(row?G.r2:G.r1)-130,vx:sp,st:'move'};
   el.onclick=()=>gAnswer(it);return it})}
 function rangeTick(dt){for(const it of G.items){if(it.st==='gone')continue;if(it.st==='move'||it.st==='slow'){it.x+=it.vx*dt*(it.st==='slow'?.2:1);
   if(it.x<0){it.x=0;it.vx=Math.abs(it.vx)}if(it.x>G.W-84){it.x=G.W-84;it.vx=-Math.abs(it.vx)}}
